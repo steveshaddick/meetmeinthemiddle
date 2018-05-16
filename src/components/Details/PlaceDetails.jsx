@@ -8,6 +8,16 @@ const FormRow = styled.div`
   width: 100%;
   text-align: center;
   margin: 2rem 0;
+
+  & .search-terms {
+    width: 90%;
+    max-width: 600px;
+  }
+
+  & .search-radius {
+    width: 80%;
+    max-width: 200px;
+  }
 `;
 
 /**
@@ -79,10 +89,14 @@ export default class PlaceDetails extends Component {
         <form autoComplete="off">
           <FormRow>
             <TextField
-              placeholder="Search terms"
+              label="Search terms"
+              placeholder="restaurant, bar, etc"
               defaultValue={searchTerms}
               inputProps={{
                 'aria-label': 'Search Terms',
+              }}
+              InputLabelProps={{
+                shrink: true,
               }}
               className="search-terms"
               onChange={event => {
@@ -92,6 +106,7 @@ export default class PlaceDetails extends Component {
           </FormRow>
           <FormRow>
             <TextField
+              label="Search radius (m)"
               placeholder="Radius (m)"
               defaultValue={radius}
               inputProps={{

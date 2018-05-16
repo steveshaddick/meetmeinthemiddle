@@ -24,10 +24,12 @@ const FormRow = styled.div`
 
   & .search-input {
     width: 90%;
+    max-width: 600px;
   }
 
   & .travel-select {
     width: 80%;
+    max-width: 200px;
   }
 `;
 
@@ -100,6 +102,7 @@ export default class PersonDetails extends Component {
         <form autoComplete="off">
           <FormRow>
             <TextField
+              label="Address"
               placeholder="Address"
               defaultValue={address}
               inputProps={{

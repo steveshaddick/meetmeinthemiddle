@@ -4,7 +4,6 @@ import Helmet from 'react-helmet';
 
 import GoogleApi from 'libs/GoogleMapsApi';
 
-import Header from 'components/common/header';
 import './index.css';
 
 const GOOGLE_MAPS_KEY = 'AIzaSyB5LJvHzh4qM4--_qxMLLunCEF3w_Tc3X4';
@@ -109,7 +108,6 @@ class Layout extends Component {
             { name: 'keywords', content: 'sample, something' },
           ]}
         />
-        <Header siteTitle={data.site.siteMetadata.title} />
 
         <div
           style={{

@@ -8,7 +8,7 @@ let data = {
   },
   them: {
     address: '34 Maccaulay, Toronto, ON',
-    travelMode: 'WALKING',
+    travelMode: 'BICYCLING',
   },
   place: {
     searchTerms: '',
