@@ -6,7 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 
 const Container = styled.div`
   width: 100%;
@@ -40,28 +40,23 @@ export default class PersonDetails extends Component {
    */
   static get propTypes() {
     return {
-      closeDrawer: PropTypes.func,
+      initialData: PropTypes.object,
+      updateData: PropTypes.func,
     };
   }
 
   /**
    *
    */
-  constructor() {
+  constructor(props) {
     super();
     this.name = 'PersonDetails';
     //
     this.state = {
-      address: '',
-      travelMode: 'WALKING',
+      address: props.initialData.address,
+      travelMode: props.initialData.travelMode,
     };
   }
-
-  handleSelectChange = event => {
-    this.setState({
-      travelMode: event.target.value,
-    });
-  };
 
   /**
    *
@@ -104,13 +99,16 @@ export default class PersonDetails extends Component {
       <Container data-component={name} className={name}>
         <form autoComplete="off">
           <FormRow>
-            <Input
+            <TextField
               placeholder="Address"
-              value={address}
+              defaultValue={address}
               inputProps={{
                 'aria-label': 'Description',
               }}
               className="search-input"
+              onChange={event => {
+                this.props.updateData('address', event.target.value);
+              }}
             />
           </FormRow>
 
@@ -119,7 +117,12 @@ export default class PersonDetails extends Component {
               <InputLabel htmlFor="travel-mode">Travel Mode</InputLabel>
               <Select
                 value={travelMode}
-                onChange={this.handleSelectChange}
+                onChange={event => {
+                  this.setState({
+                    travelMode: event.target.value,
+                  });
+                  this.props.updateData('travelMode', event.target.value);
+                }}
                 inputProps={{
                   name: 'travel-mode',
                   id: 'travel-mode',

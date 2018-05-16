@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 
 const FormRow = styled.div`
   width: 100%;
@@ -18,27 +18,24 @@ export default class PlaceDetails extends Component {
    *
    */
   static get propTypes() {
-    return {};
+    return {
+      initialData: PropTypes.object,
+      updateData: PropTypes.func,
+    };
   }
 
   /**
    *
    */
-  constructor() {
+  constructor(props) {
     super();
     this.name = 'PlaceDetails';
     //
     this.state = {
-      searchTerms: '',
-      radius: 300,
+      searchTerms: props.initialData.searchTerms,
+      radius: props.initialData.radius,
     };
   }
-
-  handleChangeSearchTerms = event => {
-    this.setState({
-      searchTerms: event.target.value,
-    });
-  };
 
   /**
    *
@@ -81,25 +78,30 @@ export default class PlaceDetails extends Component {
       <div data-component={name} className={name}>
         <form autoComplete="off">
           <FormRow>
-            <Input
+            <TextField
               placeholder="Search terms"
               defaultValue={searchTerms}
               inputProps={{
                 'aria-label': 'Search Terms',
               }}
               className="search-terms"
-              onChange={this.handleChangeSearchTerms}
+              onChange={event => {
+                this.props.updateData('searchTerms', event.target.value);
+              }}
             />
           </FormRow>
           <FormRow>
-            <Input
+            <TextField
               placeholder="Radius (m)"
-              value={radius}
+              defaultValue={radius}
               inputProps={{
                 'aria-label': 'Radius',
               }}
               className="search-radius"
               type="number"
+              onChange={event => {
+                this.props.updateData('radius', event.target.value);
+              }}
             />
           </FormRow>
         </form>

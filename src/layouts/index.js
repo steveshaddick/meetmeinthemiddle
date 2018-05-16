@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 
 import GoogleApi from 'libs/GoogleMapsApi';
 
-import Header from '../components/header';
+import Header from 'components/common/header';
 import './index.css';
 
 const GOOGLE_MAPS_KEY = 'AIzaSyB5LJvHzh4qM4--_qxMLLunCEF3w_Tc3X4';

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
+import DetailsData from 'libs/DetailsData';
+
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 
-import Details from 'components/Details';
+import Details from 'components/Details/Details';
 
 /**
  *
@@ -33,8 +35,12 @@ class IndexPage extends Component {
   };
 
   closeDrawer = () => {
-    console.log('close drawer');
     this.setState({ detailsOpen: false });
+    console.log(DetailsData.get());
+  };
+
+  updateData = newData => {
+    console.log(newData);
   };
 
   render() {
@@ -49,7 +55,10 @@ class IndexPage extends Component {
             this.closeDrawer();
           }}
         >
-          <Details closeDrawer={this.closeDrawer} />
+          <Details
+            closeDrawer={this.closeDrawer}
+            updateData={this.updateData}
+          />
         </Drawer>
         <Button
           disableRipple={true}

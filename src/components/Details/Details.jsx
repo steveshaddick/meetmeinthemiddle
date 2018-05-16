@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import DetailsData from 'libs/DetailsData';
+
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
@@ -9,8 +11,8 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
 
-import PersonDetails from 'components/PersonDetails';
-import PlaceDetails from 'components/PlaceDetails';
+import PersonDetails from './PersonDetails';
+import PlaceDetails from './PlaceDetails';
 
 const Container = styled.div`
   width: 100%;
@@ -44,6 +46,7 @@ export default class Details extends Component {
   constructor() {
     super();
     this.name = 'Details';
+
     //
     this.state = {
       currentIndex: 0,
@@ -51,7 +54,6 @@ export default class Details extends Component {
   }
 
   handleNext = () => {
-    console.log('NEXT');
     this.setState(prevState => ({
       currentIndex: prevState.currentIndex + 1,
     }));
@@ -67,9 +69,18 @@ export default class Details extends Component {
     this.setState({ currentIndex });
   };
 
+  handleTabChange = (event, value) => {
+    this.setState({ currentIndex: value });
+  };
+
   handleSearch = () => {
-    console.log('search click', this);
+    DetailsData.commit();
     this.props.closeDrawer();
+  };
+
+  updateData = (type, key, value) => {
+    DetailsData.change(type, key, value);
+    this.render();
   };
 
   /**
@@ -113,14 +124,14 @@ export default class Details extends Component {
       <Container data-component={name} className={name}>
         <Tabs
           value={currentIndex}
-          onChange={this.handleChange}
+          onChange={this.handleTabChange}
           indicatorColor="primary"
           textColor="primary"
           fullWidth
         >
           <Tab label="You" />
           <Tab label="Them" />
-          <Tab label="The Spot" />
+          <Tab label="Where" />
         </Tabs>
 
         <SwipeableViews
@@ -129,9 +140,24 @@ export default class Details extends Component {
           onChangeIndex={this.handleStepChange}
           enableMouseEvents
         >
-          <PersonDetails />
-          <PersonDetails />
-          <PlaceDetails />
+          <PersonDetails
+            initialData={DetailsData.get('you')}
+            updateData={(key, value) => {
+              this.updateData('you', key, value);
+            }}
+          />
+          <PersonDetails
+            initialData={DetailsData.get('them')}
+            updateData={(key, value) => {
+              this.updateData('them', key, value);
+            }}
+          />
+          <PlaceDetails
+            initialData={DetailsData.get('place')}
+            updateData={(key, value) => {
+              this.updateData('place', key, value);
+            }}
+          />
         </SwipeableViews>
 
         {currentIndex < 2 && (
