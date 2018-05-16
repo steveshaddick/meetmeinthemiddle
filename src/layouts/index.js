@@ -50,6 +50,7 @@ class Layout extends Component {
         console.log('middle', middleLat, middleLng);
 
         GoogleApi.nearbySearch({
+          key: GOOGLE_MAPS_KEY,
           location: {
             lat: middleLat,
             lng: middleLng,
@@ -85,7 +86,7 @@ class Layout extends Component {
   }
 
   componentDidMount() {
-    GoogleApi.getDirections({
+    /*GoogleApi.getDirections({
       key: GOOGLE_MAPS_KEY,
       origin: '104 Manning Ave, Toronto, Ontario',
       destination: '34 Maccaulay St, Toronto, Ontario',
@@ -93,7 +94,7 @@ class Layout extends Component {
       .then(this.calculateMiddle)
       .catch(response => {
         console.log('API CATCH', response);
-      });
+      });*/
   }
 
   render() {

@@ -15,7 +15,7 @@ export default class __component__ extends Component {
   }
 
   /**
-   * 
+   *
    */
   constructor() {
     super();
@@ -27,7 +27,7 @@ export default class __component__ extends Component {
   /**
    *
    */
-  componentWillMount() {}
+  UNSAFE_componentWillMount() {}
 
   /**
    *
@@ -37,12 +37,12 @@ export default class __component__ extends Component {
   /**
    *
    */
-  componentWillReceiveProps() {}
+  UNSAFE_componentWillReceiveProps() {}
 
   /**
    *
    */
-  componentWillUpdate() {}
+  UNSAFE_componentWillUpdate() {}
 
   /**
    *
