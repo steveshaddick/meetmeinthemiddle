@@ -3,20 +3,36 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import SwipeableViews from 'react-swipeable-views';
-import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
+import { NextButton, PrevButton } from 'styles/theme';
+import styledMediaQuery from 'styles/mediaquery';
+
+const Container = styled.div`
+  max-width: 768px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 0rem 2rem;
+  border-top-right-radius: 1rem;
+  border-top-left-radius: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 5px solid #965679;
+  min-height: 35vh;
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  ${styledMediaQuery.minTablet`
+    min-height: 0;
+  `};
+`;
+
 const ResultSlide = styled.div`
   position: relative;
-`;
-
-const NextButton = styled(Button)`
-  float: right;
-`;
-
-const PrevButton = styled(Button)`
-  float: left;
 `;
 
 /**
@@ -86,8 +102,26 @@ export default class ResultSlides extends Component {
       );
     });
 
+    const rnd = Math.random();
+    let meetText = 'You should totally meet at:';
+    if (rnd < 0.2) {
+      meetText = 'How about:';
+    } else if (rnd < 0.4) {
+      meetText = "Here's a spot:";
+    } else if (rnd < 0.6) {
+      meetText = 'This is nearby:';
+    } else if (rnd < 0.7) {
+      meetText = "This one's not bad:";
+    } else if (rnd < 0.8) {
+      meetText = 'What do you think of:';
+    } else if (rnd < 0.9) {
+      meetText = 'Why not:';
+    }
+
     return (
-      <div data-component={name} className={name}>
+      <Container data-component={name} className={name}>
+        <p>{meetText}</p>
+
         <SwipeableViews
           axis="x"
           index={currentPlaceIndex}
@@ -95,23 +129,15 @@ export default class ResultSlides extends Component {
         >
           {slides}
         </SwipeableViews>
-        <NextButton
-          size="small"
-          onClick={this.handleNext}
-          disabled={currentPlaceIndex === data.length - 1}
-        >
+        <NextButton size="small" onClick={this.handleNext}>
           Next
           <KeyboardArrowRight />
         </NextButton>
-        <PrevButton
-          size="small"
-          onClick={this.handleBack}
-          disabled={currentPlaceIndex === 0}
-        >
-          Back
+        <PrevButton size="small" onClick={this.handleBack}>
           <KeyboardArrowLeft />
+          Back
         </PrevButton>
-      </div>
+      </Container>
     );
   }
 }

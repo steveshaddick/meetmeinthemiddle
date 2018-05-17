@@ -4,11 +4,13 @@ import styled from 'styled-components';
 import classNames from 'classnames';
 
 import DetailsData from 'libs/DetailsData';
-import styledMediaQuery from 'styles/mediaquery';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import CloseIcon from '@material-ui/icons/Close';
+
+import { NextButton, PrevButton } from 'styles/theme';
+import styledMediaQuery from 'styles/mediaquery';
 
 import DetailsTabs from './DetailsTabs';
 import PersonDetails from './PersonDetails';
@@ -47,72 +49,17 @@ const ButtonsWrapper = styled.div`
   `};
 `;
 
-const Button = styled.button`
-  border: 0;
-  cursor: pointer;
-  background: none;
-  color: #965679;
-  font-weight: 500;
-  padding: 0.5rem 0;
-  margin: 0 0.5rem;
-  background: rgba(255, 255, 255, 0.5);
-
-  & svg {
-    vertical-align: middle;
-    transform: translate3d(0, 0, 0);
-    transition: transform 0.3s;
-  }
-
-  &[disabled] {
-    color: #aaa;
-    cursor: default;
-    pointer-events: none;
-  }
-
-  &:hover,
-  &:focus {
-    color: #512e41;
-  }
-`;
-
-const NextButton = Button.extend`
-  float: right;
-  padding-left: 0.75rem;
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-
-  &:hover,
-  &:focus {
-    & svg {
-      transform: translate3d(2px, 0, 0);
-    }
-  }
-`;
-
-const PrevButton = Button.extend`
-  float: left;
-  padding-right: 0.75rem;
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-
-  &:hover,
-  &:focus {
-    & svg {
-      transform: translate3d(-2px, 0, 0);
-    }
-  }
-`;
-
 const SearchButton = NextButton.extend`
   font-weight: 600;
-  font-size: 1.25rem;
   padding-right: 0.75rem;
-  border: 1px solid #6d9656;
+  border: 2px solid #6d9656;
   color: #6d9656;
+
   &:hover,
   &:focus {
+    background-color: #6d9656;
     border-color: #50703f;
-    color: #50703f;
+    color: #ffffff;
   }
 `;
 

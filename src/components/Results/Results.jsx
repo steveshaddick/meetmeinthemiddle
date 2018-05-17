@@ -14,6 +14,15 @@ const Container = styled.div`
   position: relative;
   overflow: auto;
   z-index: 1;
+  background: #ddd;
+
+  & .ResultSlides {
+    position: absolute;
+    bottom: 0;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+  }
 `;
 
 const SearchOverlay = styled.div`
@@ -115,8 +124,8 @@ export default class Results extends Component {
   }
 
   selectCurrentPlace = newIndex => {
-    newIndex = newIndex < 0 ? this.props.data.length - 1 : newIndex;
-    newIndex = newIndex > this.props.data.length - 1 ? 0 : newIndex;
+    newIndex = newIndex < 0 ? this.state.mapData.length - 1 : newIndex;
+    newIndex = newIndex > this.state.mapData.length - 1 ? 0 : newIndex;
 
     this.setState({
       currentPlaceIndex: newIndex,

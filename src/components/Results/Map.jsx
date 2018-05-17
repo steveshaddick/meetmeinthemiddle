@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { withPrefix } from 'gatsby-link';
 
 import GoogleMapsApi from 'libs/GoogleMapsApi';
+
+import styledMediaQuery from 'styles/mediaquery';
 
 import map_jpg from 'images/map.jpg';
 
 const Container = styled.div`
   width: 100%;
-  height: 400px;
+  height: 65vh;
+
+  ${styledMediaQuery.minTablet`
+    height: 100vh;
+  `};
 `;
 
 const MapWrapper = styled.div`
@@ -58,6 +65,7 @@ export default class Map extends Component {
     //
     this.state = {
       places: null,
+      currentMarker: null,
     };
   }
 
@@ -84,11 +92,15 @@ export default class Map extends Component {
         position: place.geometry.location,
         map: this.map,
         title: place.name,
+        icon: withPrefix('/images/meetme_icon.svg'),
       });
 
       marker.addListener('click', () => {
         this.props.selectCurrentPlace(index);
       });
+
+      marker.setOpacity(0.25);
+      marker.setZIndex(1);
 
       newPlaces.push({
         place: place,
@@ -105,12 +117,25 @@ export default class Map extends Component {
   };
 
   setMapViewport = () => {
-    const { places } = this.state;
+    const { places, currentMarker } = this.state;
     const { currentPlaceIndex } = this.props;
 
     if (places.length && places[currentPlaceIndex]) {
       const place = places[currentPlaceIndex];
-      this.map.setCenter(place.place.geometry.viewport.getCenter());
+      const newMarker = place.marker;
+      this.map.panTo(place.place.geometry.viewport.getCenter());
+
+      if (currentMarker) {
+        currentMarker.setOpacity(0.25);
+        currentMarker.setZIndex(1);
+      }
+
+      newMarker.setOpacity(1);
+      newMarker.setZIndex(10);
+
+      this.setState({
+        currentMarker: newMarker,
+      });
     }
   };
 
@@ -131,7 +156,7 @@ export default class Map extends Component {
           this.isLoadingMap = true;
           GoogleMapsApi.loadMap(this.refMap, {
             center: { lat: 43.6532, lng: -79.3832 },
-            zoom: 15,
+            zoom: 16,
             fullscreenControl: false,
             streetViewControl: false,
             mapTypeControl: false,
