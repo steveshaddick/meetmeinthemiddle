@@ -13,23 +13,26 @@ const Container = styled.div`
   height: 100%;
 
   & form {
-    margin: 1rem 0;
+    margin: 0;
   }
 `;
 
 const FormRow = styled.div`
   width: 100%;
   text-align: center;
-  margin: 2rem 0;
+  padding: 1rem 0;
 
   & .search-input {
-    width: 90%;
-    max-width: 600px;
+    width: 100%;
   }
 
   & .travel-select {
     width: 80%;
     max-width: 200px;
+  }
+
+  & .input-label {
+    color: #884c6d;
   }
 `;
 
@@ -63,22 +66,7 @@ export default class PersonDetails extends Component {
   /**
    *
    */
-  UNSAFE_componentWillMount() {}
-
-  /**
-   *
-   */
   componentDidMount() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillReceiveProps() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillUpdate() {}
 
   /**
    *
@@ -106,7 +94,10 @@ export default class PersonDetails extends Component {
               placeholder="Address"
               defaultValue={address}
               inputProps={{
-                'aria-label': 'Description',
+                'aria-label': 'Address',
+              }}
+              inputLabelProps={{
+                className: 'input-label',
               }}
               className="search-input"
               onChange={event => {

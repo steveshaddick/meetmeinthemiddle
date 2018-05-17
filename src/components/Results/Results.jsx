@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import styled from 'styled-components';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import Map from './Map';
 import ResultSlides from './ResultSlides';
 
@@ -11,6 +13,7 @@ const Container = styled.div`
   height: 100vh;
   position: relative;
   overflow: auto;
+  z-index: 1;
 `;
 
 const SearchOverlay = styled.div`
@@ -19,10 +22,13 @@ const SearchOverlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.6);
   transition: transform 0.3s;
   transform: translate3d(0, -100%, 0);
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   &.show {
     transform: translate3d(0, 0%, 0);
@@ -146,7 +152,16 @@ export default class Results extends Component {
           className={classNames({
             show: isSearching,
           })}
-        />
+        >
+          <CircularProgress
+            thickness={5}
+            style={{
+              color: '#965679',
+              display: 'block',
+              margin: '0 auto',
+            }}
+          />
+        </SearchOverlay>
         <Map
           data={mapData}
           selectCurrentPlace={this.selectCurrentPlace}

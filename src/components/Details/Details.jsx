@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import classNames from 'classnames';
 
 import DetailsData from 'libs/DetailsData';
+import styledMediaQuery from 'styles/mediaquery';
 
-import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import CloseIcon from '@material-ui/icons/Close';
@@ -19,12 +19,110 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const NextButton = styled(Button)`
-  float: right;
+const TabContainer = styled.div`
+  display: none;
+  padding: 1rem 1rem;
+
+  &.current-tab {
+    display: block;
+  }
+
+  ${styledMediaQuery.minTablet`
+    padding: 1rem 2rem;
+  `};
 `;
 
-const PrevButton = styled(Button)`
+const ButtonsWrapper = styled.div`
+  padding: 1rem 1rem;
+  background: #f6efe1;
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  ${styledMediaQuery.minTablet`
+    padding: 1rem 2rem;
+  `};
+`;
+
+const Button = styled.button`
+  border: 0;
+  cursor: pointer;
+  background: none;
+  color: #965679;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  margin: 0 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+
+  & svg {
+    vertical-align: middle;
+    transform: translate3d(0, 0, 0);
+    transition: transform 0.3s;
+  }
+
+  &[disabled] {
+    color: #aaa;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus {
+    color: #512e41;
+  }
+`;
+
+const NextButton = Button.extend`
+  float: right;
+  padding-left: 0.75rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+
+  &:hover,
+  &:focus {
+    & svg {
+      transform: translate3d(2px, 0, 0);
+    }
+  }
+`;
+
+const PrevButton = Button.extend`
   float: left;
+  padding-right: 0.75rem;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+
+  &:hover,
+  &:focus {
+    & svg {
+      transform: translate3d(-2px, 0, 0);
+    }
+  }
+`;
+
+const SearchButton = NextButton.extend`
+  font-weight: 600;
+  font-size: 1.25rem;
+  padding-right: 0.75rem;
+  border: 1px solid #6d9656;
+  color: #6d9656;
+  &:hover,
+  &:focus {
+    border-color: #50703f;
+    color: #50703f;
+  }
+`;
+
+const CloseButtonWrapper = styled.div`
+  position: absolute;
+  bottom: calc(-4rem - 5px);
+  right: 0;
+  width: 100%;
+  height: 4rem;
+  overflow: hidden;
 `;
 
 const CloseButton = styled.button`
@@ -32,23 +130,24 @@ const CloseButton = styled.button`
   background: #965679;
   color: #fff;
   position: absolute;
-  bottom: -2.75rem;
-  right: 1rem;
+  top: 0;
+  right: 0;
   padding: 0.25rem 1rem;
   border-bottom-left-radius: 1rem;
   cursor: pointer;
+  transform: translate3d(0, -3rem, 0);
+  transition: transform 0.3s cubic-bezier(0.82, 0.01, 1, 0.73);
+  transition-delay: 350ms;
 
   & span {
     text-indent: -99999px;
     display: inline-block;
   }
-`;
-
-const TabContainer = styled.div`
-  display: none;
-
-  &.current-tab {
-    display: block;
+  /*5e3727*/
+  &:hover,
+  &:active {
+    background: #512e41;
+    border-color: #512e41;
   }
 `;
 
@@ -77,6 +176,9 @@ export default class Details extends Component {
     this.state = {
       currentIndex: 0,
     };
+
+    this.isCloseButtonDown = false;
+    this.refCloseButton = null;
   }
 
   handleNext = () => {
@@ -112,7 +214,12 @@ export default class Details extends Component {
   /**
    *
    */
-  componentDidMount() {}
+  componentDidMount() {
+    this.refCloseButton.setAttribute(
+      'style',
+      'transform: translate3d(0,0,0); -webkit-transform: translate3d(0,0,0);'
+    );
+  }
 
   /**
    *
@@ -143,6 +250,7 @@ export default class Details extends Component {
             'current-tab': currentIndex == 0,
           })}
         >
+          <p>Where are you at?</p>
           <PersonDetails
             initialData={DetailsData.get('you')}
             updateData={(key, value) => {
@@ -156,6 +264,7 @@ export default class Details extends Component {
             'current-tab': currentIndex == 1,
           })}
         >
+          <p>Where are they at?</p>
           <PersonDetails
             initialData={DetailsData.get('them')}
             updateData={(key, value) => {
@@ -169,6 +278,7 @@ export default class Details extends Component {
             'current-tab': currentIndex == 2,
           })}
         >
+          <p>Any spot in mind?</p>
           <PlaceDetails
             initialData={DetailsData.get('place')}
             updateData={(key, value) => {
@@ -177,43 +287,51 @@ export default class Details extends Component {
           />
         </TabContainer>
 
-        {currentIndex < 2 && (
-          <NextButton
+        <ButtonsWrapper>
+          {currentIndex < 2 && (
+            <NextButton
+              size="small"
+              onClick={this.handleNext}
+              disabled={currentIndex === 2}
+              disableRipple={true}
+            >
+              <span>Next</span>
+              <KeyboardArrowRight />
+            </NextButton>
+          )}
+
+          {currentIndex === 2 && (
+            <SearchButton
+              size="small"
+              onClick={this.handleSearch}
+              disableRipple={true}
+            >
+              <span>Search</span>
+            </SearchButton>
+          )}
+
+          <PrevButton
             size="small"
-            onClick={this.handleNext}
-            disabled={currentIndex === 2}
+            onClick={this.handleBack}
+            disabled={currentIndex === 0}
             disableRipple={true}
           >
-            Next
-            <KeyboardArrowRight />
-          </NextButton>
-        )}
+            <KeyboardArrowLeft />
+            <span>Back</span>
+          </PrevButton>
+        </ButtonsWrapper>
 
-        {currentIndex === 2 && (
-          <NextButton
-            size="small"
-            onClick={this.handleSearch}
-            disableRipple={true}
+        <CloseButtonWrapper>
+          <CloseButton
+            onClick={this.props.closeDrawer}
+            innerRef={ref => {
+              this.refCloseButton = ref;
+            }}
           >
-            Search
-            <KeyboardArrowRight />
-          </NextButton>
-        )}
-
-        <PrevButton
-          size="small"
-          onClick={this.handleBack}
-          disabled={currentIndex === 0}
-          disableRipple={true}
-        >
-          <KeyboardArrowLeft />
-          Back
-        </PrevButton>
-
-        <CloseButton onClick={this.props.closeDrawer}>
-          <span>Close</span>
-          <CloseIcon />
-        </CloseButton>
+            <span>Close</span>
+            <CloseIcon />
+          </CloseButton>
+        </CloseButtonWrapper>
       </Container>
     );
   }

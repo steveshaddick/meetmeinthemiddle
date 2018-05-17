@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import classNames from 'classnames';
 
 import DetailsData from 'libs/DetailsData';
 import MidPointFinder from 'libs/MidPointFinder';
@@ -9,27 +10,13 @@ import Drawer from '@material-ui/core/Drawer';
 import Details from 'components/Details/Details';
 import Results from 'components/Results/Results';
 
-const DetailsDrawer = styled(Drawer)`
-  & .drawer-modal {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    height: 20rem;
-    border-bottom: 5px solid #965679;
+const Container = styled.div`
+  &.details-open {
+    .drawer-button {
+      transition-delay: 0;
+      transform: translate3d(0, -50px, 0);
+    }
   }
-`;
-
-const DrawerButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1000;
-  border: 0;
-  padding: 1rem;
-  background-color: #965679;
-  color: #fff;
-  border-bottom-left-radius: 1rem;
-  cursor: pointer;
 `;
 
 const TopBorder = styled.div`
@@ -43,6 +30,19 @@ const TopBorder = styled.div`
   z-index: 1000;
 `;
 
+const DetailsDrawer = styled(Drawer)`
+  &.drawer-wrapper {
+    display: block;
+  }
+
+  & .drawer-content {
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    border-bottom: 5px solid #965679;
+  }
+`;
+
 const DrawerButtonWrapper = styled.div`
   position: fixed;
   width: 100%;
@@ -51,6 +51,29 @@ const DrawerButtonWrapper = styled.div`
   margin: 0 auto;
   left: 0;
   right: 0;
+`;
+
+const DrawerButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 0;
+  z-index: 1000;
+  border: 0;
+  padding: 0.25rem 1.25rem 0.5rem;
+  font-weight: 500;
+  background-color: #965679;
+  color: #fff;
+  border-bottom-left-radius: 1rem;
+  cursor: pointer;
+  transform: translate3d(0, 0px, 0);
+  transition: 0.3s transform cubic-bezier(0.82, 0.01, 1, 0.73);
+  transition-delay: 350ms;
+
+  &:hover,
+  &:active {
+    background: #512e41;
+    border-color: #512e41;
+  }
 `;
 
 /**
@@ -77,6 +100,8 @@ class IndexPage extends Component {
       searchingNewResults: false,
       resultsData: null,
     };
+
+    this.refDrawerButton = null;
 
     this.midPointFinder = new MidPointFinder({
       resultsCallback: this.midPointResults,
@@ -127,19 +152,25 @@ class IndexPage extends Component {
     this.findMidPoint();
   }
 
+  /**
+   *
+   */
+  componentDidUpdate() {}
+
   render() {
     const { detailsOpen, searchingNewResults, resultsData } = this.state;
 
     return (
-      <div>
+      <Container className={classNames({ 'details-open': detailsOpen })}>
         <DetailsDrawer
           anchor="top"
           open={detailsOpen}
+          className="drawer-wrapper"
           onClose={() => {
             this.closeDrawer();
           }}
           PaperProps={{
-            className: 'drawer-modal',
+            className: 'drawer-content',
           }}
         >
           <Details
@@ -153,8 +184,12 @@ class IndexPage extends Component {
 
         <DrawerButtonWrapper>
           <DrawerButton
+            className="drawer-button"
             onClick={() => {
               this.openDrawer();
+            }}
+            ref={ref => {
+              this.refDrawerButton = ref;
             }}
           >
             Search
@@ -166,7 +201,7 @@ class IndexPage extends Component {
           data={resultsData}
           showResults={Array.isArray(resultsData)}
         />
-      </div>
+      </Container>
     );
   }
 }

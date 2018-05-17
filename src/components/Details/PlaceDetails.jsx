@@ -10,13 +10,11 @@ const FormRow = styled.div`
   margin: 2rem 0;
 
   & .search-terms {
-    width: 90%;
-    max-width: 600px;
+    width: 100%;
   }
 
   & .search-radius {
-    width: 80%;
-    max-width: 200px;
+    width: 8rem;
   }
 `;
 
@@ -50,22 +48,7 @@ export default class PlaceDetails extends Component {
   /**
    *
    */
-  UNSAFE_componentWillMount() {}
-
-  /**
-   *
-   */
   componentDidMount() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillReceiveProps() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillUpdate() {}
 
   /**
    *
