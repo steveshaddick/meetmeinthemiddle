@@ -16,7 +16,6 @@ class MidPointFinder {
   }
 
   _checkReturn() {
-    console.log('checking return', this.searchResponses);
     if (this.searchResponses.you && this.searchResponses.them) {
       this._getMiddleRoute();
     }
@@ -33,23 +32,19 @@ class MidPointFinder {
       youDuration.value *
       (1 - youDuration.value / (youDuration.value + themDuration.value));
 
-    console.log('total time', youDuration.value, themDuration.value, meetTime);
-
     let runningTotal = 0;
     for (let i = 0, len = youSteps.length; i < len; i++) {
       const step = youSteps[i];
       const nextTotal = runningTotal + step.duration.value;
+
       if (nextTotal > meetTime) {
         const percentage = (meetTime - runningTotal) / step.duration.value;
-        console.log(meetTime, runningTotal, step.duration);
         const middleLat =
           step.start_point.lat() +
           (step.end_point.lat() - step.start_point.lat()) * percentage;
         const middleLng =
           step.start_point.lng() +
           (step.end_point.lng() - step.start_point.lng()) * percentage;
-
-        console.log('middle', percentage, middleLat, middleLng);
 
         GoogleApi.nearbySearch({
           location: {
@@ -89,7 +84,7 @@ class MidPointFinder {
       them: false,
       places: false,
     };
-    console.log('travel', searchData.you.travelMode);
+
     GoogleApi.getDirections({
       origin: searchData.you.address,
       destination: searchData.them.address,

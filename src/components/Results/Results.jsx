@@ -47,35 +47,50 @@ export default class Results extends Component {
   /**
    *
    */
-  static getDerivedStateFromProps(nextProps) {
-    let newMapData = [];
-    let newSlidesData = [];
-    let newCurrentPlaceIndex = null;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { isSearching, data } = nextProps;
+    let newState = {
+      isSearching,
+    };
 
-    if (Array.isArray(nextProps.data)) {
-      for (let i = 0, len = Math.min(nextProps.data.length, 10); i < len; i++) {
-        const place = nextProps.data[i];
-
-        newMapData.push({
-          geometry: place.geometry,
-          icon: place.icon,
-          id: place.place_id,
-          name: place.name,
-        });
-
-        newSlidesData.push({
-          id: place.place_id,
-          name: place.name,
-        });
-      }
-      newCurrentPlaceIndex = 0;
+    if (isSearching && !prevState.isSearching) {
+      newState = Object.assign(newState, {
+        mapData: [],
+        slidesData: [],
+        currentPlaceIndex: null,
+      });
     }
 
-    return {
-      mapData: newMapData,
-      slidesData: newSlidesData,
-      currentPlaceIndex: newCurrentPlaceIndex,
-    };
+    if (!isSearching && prevState.isSearching) {
+      let newMapData = [];
+      let newSlidesData = [];
+
+      if (Array.isArray(data)) {
+        for (let i = 0, len = Math.min(data.length, 10); i < len; i++) {
+          const place = data[i];
+
+          newMapData.push({
+            geometry: place.geometry,
+            icon: place.icon,
+            id: place.place_id,
+            name: place.name,
+          });
+
+          newSlidesData.push({
+            id: place.place_id,
+            name: place.name,
+          });
+        }
+      }
+
+      newState = Object.assign(newState, {
+        mapData: newMapData,
+        slidesData: newSlidesData,
+        currentPlaceIndex: 0,
+      });
+    }
+
+    return newState;
   }
 
   /**
@@ -86,8 +101,9 @@ export default class Results extends Component {
     this.name = 'Results';
     //
     this.state = {
-      mapData: null,
-      slidesData: null,
+      isSearching: null,
+      mapData: [],
+      slidesData: [],
       currentPlaceIndex: null,
     };
   }

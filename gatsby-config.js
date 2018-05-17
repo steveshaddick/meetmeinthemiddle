@@ -8,5 +8,11 @@ module.exports = {
     'gatsby-plugin-resolve-src',
     'gatsby-plugin-styled-components',
     'gatsby-plugin-react-next',
+    {
+      resolve: `gatsby-plugin-google-fonts`,
+      options: {
+        fonts: [`Tajawal:400,500,600`],
+      },
+    },
   ],
 };

@@ -78,8 +78,6 @@ export default class Map extends Component {
     const { data } = this.props;
     this.clearMarkers();
 
-    console.log('showplaces', data);
-
     let newPlaces = [];
     data.map((place, index) => {
       const marker = new this.googleMaps.Marker({
@@ -98,8 +96,6 @@ export default class Map extends Component {
       });
     });
 
-    console.log(newPlaces);
-
     this.setState(
       () => ({
         places: newPlaces,
@@ -109,9 +105,13 @@ export default class Map extends Component {
   };
 
   setMapViewport = () => {
-    const place = this.state.places[this.props.currentPlaceIndex];
-    console.log('set map', place);
-    this.map.setCenter(place.place.geometry.viewport.getCenter());
+    const { places } = this.state;
+    const { currentPlaceIndex } = this.props;
+
+    if (places.length && places[currentPlaceIndex]) {
+      const place = places[currentPlaceIndex];
+      this.map.setCenter(place.place.geometry.viewport.getCenter());
+    }
   };
 
   /**
@@ -128,13 +128,14 @@ export default class Map extends Component {
     if (showResults) {
       if (!this.map) {
         if (!this.isLoadingMap) {
-          console.log('loading map', this.refMap);
           this.isLoadingMap = true;
           GoogleMapsApi.loadMap(this.refMap, {
             center: { lat: 43.6532, lng: -79.3832 },
             zoom: 15,
+            fullscreenControl: false,
+            streetViewControl: false,
+            mapTypeControl: false,
           }).then(response => {
-            console.log('map loaded', response);
             this.map = response.map;
             this.googleMaps = response.googleMaps;
             this.showPlaces();

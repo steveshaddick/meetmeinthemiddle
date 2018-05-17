@@ -5,7 +5,6 @@ import DetailsData from 'libs/DetailsData';
 import MidPointFinder from 'libs/MidPointFinder';
 
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
 
 import Details from 'components/Details/Details';
 import Results from 'components/Results/Results';
@@ -16,6 +15,17 @@ const DetailsDrawer = styled(Drawer)`
     max-width: 700px;
     margin: 0 auto;
   }
+`;
+
+const DrawerButton = styled.button`
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  border: 0;
+  padding: 1rem;
+  background-color: #965679;
+  color: #fff;
 `;
 
 /**
@@ -72,7 +82,6 @@ class IndexPage extends Component {
   };
 
   findMidPoint = () => {
-    console.log('getting new search');
     this.midPointFinder.find(DetailsData.get());
     this.setState({
       searchingNewResults: true,
@@ -80,7 +89,6 @@ class IndexPage extends Component {
   };
 
   midPointResults = response => {
-    console.log('CALLBACK', response);
     this.setState({
       searchingNewResults: false,
       resultsData: response,
@@ -115,14 +123,13 @@ class IndexPage extends Component {
             dirtyData={this.dirtyData}
           />
         </DetailsDrawer>
-        <Button
-          disableRipple={true}
+        <DrawerButton
           onClick={() => {
             this.openDrawer();
           }}
         >
           open
-        </Button>
+        </DrawerButton>
 
         <Results
           isSearching={searchingNewResults}
