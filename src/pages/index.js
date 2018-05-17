@@ -14,11 +14,13 @@ const DetailsDrawer = styled(Drawer)`
     width: 100%;
     max-width: 700px;
     margin: 0 auto;
+    height: 20rem;
+    border-bottom: 5px solid #965679;
   }
 `;
 
 const DrawerButton = styled.button`
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   z-index: 1000;
@@ -26,6 +28,29 @@ const DrawerButton = styled.button`
   padding: 1rem;
   background-color: #965679;
   color: #fff;
+  border-bottom-left-radius: 1rem;
+  cursor: pointer;
+`;
+
+const TopBorder = styled.div`
+  height: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: #965679;
+  z-index: 1000;
+`;
+
+const DrawerButtonWrapper = styled.div`
+  position: fixed;
+  width: 100%;
+  max-width: 700px;
+  z-index: 1000;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
 `;
 
 /**
@@ -123,13 +148,18 @@ class IndexPage extends Component {
             dirtyData={this.dirtyData}
           />
         </DetailsDrawer>
-        <DrawerButton
-          onClick={() => {
-            this.openDrawer();
-          }}
-        >
-          open
-        </DrawerButton>
+
+        <TopBorder />
+
+        <DrawerButtonWrapper>
+          <DrawerButton
+            onClick={() => {
+              this.openDrawer();
+            }}
+          >
+            Search
+          </DrawerButton>
+        </DrawerButtonWrapper>
 
         <Results
           isSearching={searchingNewResults}

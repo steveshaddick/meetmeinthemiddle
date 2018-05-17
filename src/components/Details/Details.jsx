@@ -5,12 +5,12 @@ import classNames from 'classnames';
 
 import DetailsData from 'libs/DetailsData';
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import CloseIcon from '@material-ui/icons/Close';
 
+import DetailsTabs from './DetailsTabs';
 import PersonDetails from './PersonDetails';
 import PlaceDetails from './PlaceDetails';
 
@@ -25,6 +25,23 @@ const NextButton = styled(Button)`
 
 const PrevButton = styled(Button)`
   float: left;
+`;
+
+const CloseButton = styled.button`
+  border: 0;
+  background: #965679;
+  color: #fff;
+  position: absolute;
+  bottom: -2.75rem;
+  right: 1rem;
+  padding: 0.25rem 1rem;
+  border-bottom-left-radius: 1rem;
+  cursor: pointer;
+
+  & span {
+    text-indent: -99999px;
+    display: inline-block;
+  }
 `;
 
 const TabContainer = styled.div`
@@ -95,22 +112,7 @@ export default class Details extends Component {
   /**
    *
    */
-  UNSAFE_componentWillMount() {}
-
-  /**
-   *
-   */
   componentDidMount() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillReceiveProps() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillUpdate() {}
 
   /**
    *
@@ -131,17 +133,10 @@ export default class Details extends Component {
 
     return (
       <Container data-component={name} className={name}>
-        <Tabs
-          value={currentIndex}
-          onChange={this.handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          fullWidth
-        >
-          <Tab label="You" />
-          <Tab label="Them" />
-          <Tab label="Where" />
-        </Tabs>
+        <DetailsTabs
+          currentIndex={currentIndex}
+          handleTabChange={this.handleTabChange}
+        />
 
         <TabContainer
           className={classNames({
@@ -214,6 +209,11 @@ export default class Details extends Component {
           <KeyboardArrowLeft />
           Back
         </PrevButton>
+
+        <CloseButton onClick={this.props.closeDrawer}>
+          <span>Close</span>
+          <CloseIcon />
+        </CloseButton>
       </Container>
     );
   }
