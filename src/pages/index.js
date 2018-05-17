@@ -10,8 +10,6 @@ import Button from '@material-ui/core/Button';
 import Details from 'components/Details/Details';
 import Results from 'components/Results/Results';
 
-const GOOGLE_MAPS_KEY = 'AIzaSyB5LJvHzh4qM4--_qxMLLunCEF3w_Tc3X4';
-
 const DetailsDrawer = styled(Drawer)`
   & .drawer-modal {
     width: 100%;
@@ -40,13 +38,12 @@ class IndexPage extends Component {
     //
     this.state = {
       detailsOpen: false,
-      dirtyData: false,
+      isDirtyData: false,
       searchingNewResults: false,
       resultsData: null,
     };
 
     this.midPointFinder = new MidPointFinder({
-      key: GOOGLE_MAPS_KEY,
       resultsCallback: this.midPointResults,
     });
   }
@@ -54,23 +51,23 @@ class IndexPage extends Component {
   openDrawer = () => {
     this.setState({
       detailsOpen: true,
-      dirtyData: false,
+      isDirtyData: false,
     });
   };
 
   closeDrawer = () => {
-    const { dirtyData } = this.state;
+    const { isDirtyData } = this.state;
 
     this.setState({ detailsOpen: false });
 
-    if (dirtyData) {
+    if (isDirtyData) {
       this.findMidPoint();
     }
   };
 
   dirtyData = () => {
     this.setState({
-      dirtyData: true,
+      isDirtyData: true,
     });
   };
 
@@ -115,6 +112,7 @@ class IndexPage extends Component {
           <Details
             closeDrawer={this.closeDrawer}
             updateData={this.updateData}
+            dirtyData={this.dirtyData}
           />
         </DetailsDrawer>
         <Button
@@ -126,7 +124,11 @@ class IndexPage extends Component {
           open
         </Button>
 
-        <Results isSearching={searchingNewResults} data={resultsData} />
+        <Results
+          isSearching={searchingNewResults}
+          data={resultsData}
+          showResults={Array.isArray(resultsData)}
+        />
       </div>
     );
   }

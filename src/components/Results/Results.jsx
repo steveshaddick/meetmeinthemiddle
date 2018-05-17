@@ -39,7 +39,42 @@ export default class Results extends Component {
   static get propTypes() {
     return {
       isSearching: PropTypes.bool,
-      data: PropTypes.object,
+      data: PropTypes.array,
+      showResults: PropTypes.bool,
+    };
+  }
+
+  /**
+   *
+   */
+  static getDerivedStateFromProps(nextProps) {
+    let newMapData = [];
+    let newSlidesData = [];
+    let newCurrentPlaceIndex = null;
+
+    if (Array.isArray(nextProps.data)) {
+      for (let i = 0, len = Math.min(nextProps.data.length, 10); i < len; i++) {
+        const place = nextProps.data[i];
+
+        newMapData.push({
+          geometry: place.geometry,
+          icon: place.icon,
+          id: place.place_id,
+          name: place.name,
+        });
+
+        newSlidesData.push({
+          id: place.place_id,
+          name: place.name,
+        });
+      }
+      newCurrentPlaceIndex = 0;
+    }
+
+    return {
+      mapData: newMapData,
+      slidesData: newSlidesData,
+      currentPlaceIndex: newCurrentPlaceIndex,
     };
   }
 
@@ -50,28 +85,26 @@ export default class Results extends Component {
     super();
     this.name = 'Results';
     //
-    this.state = {};
+    this.state = {
+      mapData: null,
+      slidesData: null,
+      currentPlaceIndex: null,
+    };
   }
 
-  /**
-   *
-   */
-  UNSAFE_componentWillMount() {}
+  selectCurrentPlace = newIndex => {
+    newIndex = newIndex < 0 ? this.props.data.length - 1 : newIndex;
+    newIndex = newIndex > this.props.data.length - 1 ? 0 : newIndex;
+
+    this.setState({
+      currentPlaceIndex: newIndex,
+    });
+  };
 
   /**
    *
    */
   componentDidMount() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillReceiveProps() {}
-
-  /**
-   *
-   */
-  UNSAFE_componentWillUpdate() {}
 
   /**
    *
@@ -88,7 +121,8 @@ export default class Results extends Component {
    */
   render() {
     const { name } = this;
-    const { isSearching } = this.props;
+    const { isSearching, showResults } = this.props;
+    const { mapData, slidesData, currentPlaceIndex } = this.state;
 
     return (
       <Container data-component={name} className={name}>
@@ -97,8 +131,17 @@ export default class Results extends Component {
             show: isSearching,
           })}
         />
-        <Map />
-        <ResultSlides />
+        <Map
+          data={mapData}
+          selectCurrentPlace={this.selectCurrentPlace}
+          currentPlaceIndex={currentPlaceIndex}
+          showResults={showResults}
+        />
+        <ResultSlides
+          data={slidesData}
+          selectCurrentPlace={this.selectCurrentPlace}
+          currentPlaceIndex={currentPlaceIndex}
+        />
       </Container>
     );
   }

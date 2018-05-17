@@ -1,6 +1,8 @@
 //import axios from 'axios';
 //import queryString from 'query-string';
 
+const GOOGLE_MAPS_KEY = 'AIzaSyB5LJvHzh4qM4--_qxMLLunCEF3w_Tc3X4';
+
 let loadingTries = 0;
 let isLoading = false;
 let googleMaps = null;
@@ -57,7 +59,7 @@ const GoogleApi = {
             resolve(response);
           });
         });
-        GoogleApi.loadSDK(parameters.key);
+        GoogleApi.loadSDK(GOOGLE_MAPS_KEY);
       });
     }
 
@@ -70,7 +72,7 @@ const GoogleApi = {
         {
           origin: parameters.origin,
           destination: parameters.destination,
-          travelMode: 'WALKING',
+          travelMode: parameters.travelMode,
         },
         (response, status) => {
           if (status === 'OK') {
@@ -91,7 +93,7 @@ const GoogleApi = {
             resolve(response);
           });
         });
-        GoogleApi.loadSDK(parameters.key);
+        GoogleApi.loadSDK(GOOGLE_MAPS_KEY);
       });
     }
 
@@ -108,6 +110,29 @@ const GoogleApi = {
         } else {
           reject(response);
         }
+      });
+    });
+  },
+
+  loadMap: (element, parameters) => {
+    if (!googleMaps) {
+      return new Promise(resolve => {
+        callbacks.push(() => {
+          GoogleApi.loadMap(element, parameters).then(map => {
+            resolve({
+              googleMaps,
+              map,
+            });
+          });
+        });
+        GoogleApi.loadSDK(GOOGLE_MAPS_KEY);
+      });
+    }
+
+    return new Promise(resolve => {
+      resolve({
+        googleMaps,
+        map: new googleMaps.Map(element, parameters),
       });
     });
   },

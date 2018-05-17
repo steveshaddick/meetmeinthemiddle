@@ -2,9 +2,8 @@ import GoogleApi from 'libs/GoogleMapsApi';
 
 class MidPointFinder {
   constructor(params) {
-    const { key, resultsCallback } = params;
+    const { resultsCallback } = params;
 
-    this.key = key;
     this.resultsCallback = resultsCallback;
 
     this.isSearching = false;
@@ -30,26 +29,29 @@ class MidPointFinder {
     const { duration: themDuration } = themRoute;
 
     //const shortestRoute = youDuration < themDuration ? 'you' : 'them';
-    const halfTime = Math.min(youDuration.value, themDuration.value) / 2;
+    const meetTime =
+      youDuration.value *
+      (1 - youDuration.value / (youDuration.value + themDuration.value));
 
-    console.log('total time', youDuration.value, themDuration.value, halfTime);
+    console.log('total time', youDuration.value, themDuration.value, meetTime);
 
     let runningTotal = 0;
     for (let i = 0, len = youSteps.length; i < len; i++) {
       const step = youSteps[i];
       const nextTotal = runningTotal + step.duration.value;
-      if (nextTotal > halfTime) {
+      if (nextTotal > meetTime) {
+        const percentage = (meetTime - runningTotal) / step.duration.value;
+        console.log(meetTime, runningTotal, step.duration);
         const middleLat =
           step.start_point.lat() +
-          (step.end_point.lat() - step.start_point.lat()) / 2;
+          (step.end_point.lat() - step.start_point.lat()) * percentage;
         const middleLng =
           step.start_point.lng() +
-          (step.end_point.lng() - step.start_point.lng()) / 2;
+          (step.end_point.lng() - step.start_point.lng()) * percentage;
 
-        console.log('middle', middleLat, middleLng);
+        console.log('middle', percentage, middleLat, middleLng);
 
         GoogleApi.nearbySearch({
-          key: this.key,
           location: {
             lat: middleLat,
             lng: middleLng,
@@ -64,7 +66,7 @@ class MidPointFinder {
           })
           .catch(response => {
             this.isSearching = false;
-            console.log('ERROR', response);
+            console.log('nearby ERROR', response);
           });
         break;
       }
@@ -78,6 +80,8 @@ class MidPointFinder {
       return;
     }
 
+    console.log('searching...', searchData);
+
     this.isSearching = true;
     this.searchData = searchData;
     this.searchResponses = {
@@ -85,9 +89,8 @@ class MidPointFinder {
       them: false,
       places: false,
     };
-
+    console.log('travel', searchData.you.travelMode);
     GoogleApi.getDirections({
-      key: this.key,
       origin: searchData.you.address,
       destination: searchData.them.address,
       travelMode: searchData.you.travelMode,
@@ -101,7 +104,6 @@ class MidPointFinder {
       });
 
     GoogleApi.getDirections({
-      key: this.key,
       origin: searchData.them.address,
       destination: searchData.you.address,
       travelMode: searchData.them.travelMode,

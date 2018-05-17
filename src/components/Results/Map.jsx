@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
+import GoogleMapsApi from 'libs/GoogleMapsApi';
 
 import map_jpg from 'images/map.jpg';
 
@@ -25,7 +27,19 @@ export default class Map extends Component {
    *
    */
   static get propTypes() {
-    return {};
+    return {
+      data: PropTypes.array,
+      currentPlaceIndex: PropTypes.number,
+      showResults: PropTypes.bool,
+      selectCurrentPlace: PropTypes.func,
+    };
+  }
+
+  /**
+   *
+   */
+  static getDerivedStateFromProps() {
+    return null;
   }
 
   /**
@@ -34,14 +48,71 @@ export default class Map extends Component {
   constructor() {
     super();
     this.name = 'Map';
+
+    this.map = null;
+    this.googleMaps = null;
+    this.refMap = null;
+
+    this.isLoadingMap = false;
+
     //
-    this.state = {};
+    this.state = {
+      places: null,
+    };
   }
 
-  /**
-   *
-   */
-  UNSAFE_componentWillMount() {}
+  clearMarkers = () => {
+    if (this.state.places) {
+      this.state.places.forEach(place => {
+        place.marker.setMap(null);
+        //place.marker.removeListener('click');
+      });
+    }
+
+    this.setState(() => ({
+      places: null,
+    }));
+  };
+
+  showPlaces = () => {
+    const { data } = this.props;
+    this.clearMarkers();
+
+    console.log('showplaces', data);
+
+    let newPlaces = [];
+    data.map((place, index) => {
+      const marker = new this.googleMaps.Marker({
+        position: place.geometry.location,
+        map: this.map,
+        title: place.name,
+      });
+
+      marker.addListener('click', () => {
+        this.props.selectCurrentPlace(index);
+      });
+
+      newPlaces.push({
+        place: place,
+        marker: marker,
+      });
+    });
+
+    console.log(newPlaces);
+
+    this.setState(
+      () => ({
+        places: newPlaces,
+      }),
+      this.setMapViewport
+    );
+  };
+
+  setMapViewport = () => {
+    const place = this.state.places[this.props.currentPlaceIndex];
+    console.log('set map', place);
+    this.map.setCenter(place.place.geometry.viewport.getCenter());
+  };
 
   /**
    *
@@ -51,17 +122,36 @@ export default class Map extends Component {
   /**
    *
    */
-  UNSAFE_componentWillReceiveProps() {}
+  componentDidUpdate(prevProps) {
+    const { showResults, data, currentPlaceIndex } = this.props;
 
-  /**
-   *
-   */
-  UNSAFE_componentWillUpdate() {}
-
-  /**
-   *
-   */
-  componentDidUpdate() {}
+    if (showResults) {
+      if (!this.map) {
+        if (!this.isLoadingMap) {
+          console.log('loading map', this.refMap);
+          this.isLoadingMap = true;
+          GoogleMapsApi.loadMap(this.refMap, {
+            center: { lat: 43.6532, lng: -79.3832 },
+            zoom: 15,
+          }).then(response => {
+            console.log('map loaded', response);
+            this.map = response.map;
+            this.googleMaps = response.googleMaps;
+            this.showPlaces();
+            this.setMapViewport();
+          });
+        }
+      } else {
+        if (prevProps.data != data) {
+          console.log('DATA NOT SAME', prevProps.data, data);
+          this.showPlaces();
+        }
+        if (prevProps.currentPlaceIndex != currentPlaceIndex) {
+          this.setMapViewport();
+        }
+      }
+    }
+  }
 
   /**
    *
@@ -76,7 +166,12 @@ export default class Map extends Component {
 
     return (
       <Container data-component={name} className={name}>
-        <MapWrapper />
+        <MapWrapper
+          id="map"
+          innerRef={ref => {
+            this.refMap = ref;
+          }}
+        />
       </Container>
     );
   }
