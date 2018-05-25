@@ -56,6 +56,7 @@ class MidPointFinder {
           keyword: this.searchData.place.searchTerms,
         })
           .then(response => {
+            console.log('response', response);
             this.isSearching = false;
             this.resultsCallback(response);
           })

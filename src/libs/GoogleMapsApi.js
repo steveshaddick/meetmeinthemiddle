@@ -136,6 +136,26 @@ const GoogleApi = {
       });
     });
   },
+
+  createAutocomplete: (element, options) => {
+    if (!googleMaps) {
+      return new Promise(resolve => {
+        callbacks.push(() => {
+          GoogleApi.createAutocomplete(element, options).then(response => {
+            resolve(response);
+          });
+        });
+        GoogleApi.loadSDK(GOOGLE_MAPS_KEY);
+      });
+    }
+
+    return new Promise(resolve => {
+      resolve({
+        googleMaps,
+        autocomplete: new googleMaps.places.Autocomplete(element, options),
+      });
+    });
+  },
 };
 
 export default GoogleApi;

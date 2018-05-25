@@ -36,7 +36,7 @@ const TabContainer = styled.div`
 
 const ButtonsWrapper = styled.div`
   padding: 1rem 1rem;
-  background: #f6efe1;
+  background: #eee;
 
   &:after {
     content: '';
@@ -55,11 +55,18 @@ const SearchButton = NextButton.extend`
   border: 2px solid #6d9656;
   color: #6d9656;
 
-  &:hover,
-  &:focus {
-    background-color: #6d9656;
-    border-color: #50703f;
-    color: #ffffff;
+  &:enabled {
+    &:hover,
+    &:active {
+      background-color: #6d9656;
+      border-color: #50703f;
+      color: #ffffff;
+    }
+
+    &:focus {
+      border-color: #50703f;
+      outline: none;
+    }
   }
 `;
 
@@ -79,12 +86,13 @@ const CloseButton = styled.button`
   position: absolute;
   top: 0;
   right: 0;
-  padding: 0.25rem 1rem;
+  padding: 0.25rem 1rem 0;
   border-bottom-left-radius: 1rem;
   cursor: pointer;
   transform: translate3d(0, -3rem, 0);
   transition: transform 0.3s cubic-bezier(0.82, 0.01, 1, 0.73);
   transition-delay: 350ms;
+  border: 0.25rem solid #965679;
 
   & span {
     text-indent: -99999px;
@@ -95,6 +103,11 @@ const CloseButton = styled.button`
   &:active {
     background: #512e41;
     border-color: #512e41;
+  }
+
+  &:focus {
+    border-color: #512e41;
+    outline: none;
   }
 `;
 

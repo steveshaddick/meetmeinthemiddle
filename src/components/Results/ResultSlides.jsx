@@ -13,7 +13,7 @@ const Container = styled.div`
   max-width: 768px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.85);
-  padding: 0rem 2rem;
+  padding: 0rem 1.5rem;
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
   padding-bottom: 0.5rem;
@@ -28,6 +28,7 @@ const Container = styled.div`
 
   ${styledMediaQuery.minTablet`
     min-height: 0;
+    padding: 0.5rem 1.5rem;
   `};
 `;
 

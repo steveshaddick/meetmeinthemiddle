@@ -12,10 +12,6 @@ const FormRow = styled.div`
   & .search-terms {
     width: 100%;
   }
-
-  & .search-radius {
-    width: 8rem;
-  }
 `;
 
 /**
@@ -41,7 +37,6 @@ export default class PlaceDetails extends Component {
     //
     this.state = {
       searchTerms: props.initialData.searchTerms,
-      radius: props.initialData.radius,
     };
   }
 
@@ -65,7 +60,7 @@ export default class PlaceDetails extends Component {
    */
   render() {
     const { name } = this;
-    const { searchTerms, radius } = this.state;
+    const { searchTerms } = this.state;
 
     return (
       <div data-component={name} className={name}>
@@ -84,21 +79,6 @@ export default class PlaceDetails extends Component {
               className="search-terms"
               onChange={event => {
                 this.props.updateData('searchTerms', event.target.value);
-              }}
-            />
-          </FormRow>
-          <FormRow>
-            <TextField
-              label="Search radius (m)"
-              placeholder="Radius (m)"
-              defaultValue={radius}
-              inputProps={{
-                'aria-label': 'Radius',
-              }}
-              className="search-radius"
-              type="number"
-              onChange={event => {
-                this.props.updateData('radius', event.target.value);
               }}
             />
           </FormRow>

@@ -6,7 +6,7 @@ export const Button = styled.button`
   background: none;
   color: #965679;
   font-weight: 500;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0.25rem;
   margin: 0;
   background-color: rgba(255, 255, 255, 0.5);
   transition: background-color 0.2s;
@@ -18,15 +18,22 @@ export const Button = styled.button`
     transition: transform 0.3s;
   }
 
-  &[disabled] {
+  &:disabled {
     color: #aaa;
     cursor: default;
     pointer-events: none;
   }
 
-  &:hover,
-  &:active {
-    border-color: #965679;
+  &:enabled {
+    &:hover,
+    &:active {
+      border-color: #965679;
+    }
+
+    &:focus {
+      border-color: #965679;
+      outline: none;
+    }
   }
 `;
 
@@ -36,10 +43,12 @@ export const NextButton = Button.extend`
   border-top-right-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
 
-  &:hover,
-  &:focus {
-    & svg {
-      transform: translate3d(2px, 0, 0);
+  &:enabled {
+    &:hover,
+    &:active {
+      & svg {
+        transform: translate3d(2px, 0, 0);
+      }
     }
   }
 `;
@@ -50,10 +59,12 @@ export const PrevButton = Button.extend`
   border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
 
-  &:hover,
-  &:focus {
-    & svg {
-      transform: translate3d(-2px, 0, 0);
+  &:enabled {
+    &:hover,
+    &:active {
+      & svg {
+        transform: translate3d(-2px, 0, 0);
+      }
     }
   }
 `;

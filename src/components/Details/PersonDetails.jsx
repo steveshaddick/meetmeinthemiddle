@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import { purple } from 'styles/colours';
+
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+
+import GoogleMapsApi from 'libs/GoogleMapsApi';
 
 const Container = styled.div`
   width: 100%;
@@ -22,17 +25,25 @@ const FormRow = styled.div`
   text-align: center;
   padding: 1rem 0;
 
-  & .search-input {
-    width: 100%;
-  }
-
   & .travel-select {
     width: 80%;
     max-width: 200px;
   }
 
   & .input-label {
-    color: #884c6d;
+    font-size: 0.75rem;
+    text-align: left;
+  }
+`;
+
+const AddressInput = styled.input`
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #999;
+  font-size: 1.1rem;
+
+  &:focus {
+    border-color: ${purple};
   }
 `;
 
@@ -61,12 +72,24 @@ export default class PersonDetails extends Component {
       address: props.initialData.address,
       travelMode: props.initialData.travelMode,
     };
+
+    this.refInput = null;
+    this.autocomplete = null;
   }
 
   /**
    *
    */
-  componentDidMount() {}
+  componentDidMount() {
+    const { address } = this.state;
+
+    this.refInput.value = address;
+    GoogleMapsApi.createAutocomplete(this.refInput, {
+      types: ['address'],
+    }).then(obj => {
+      this.autocomplete = obj.autocomplete;
+    });
+  }
 
   /**
    *
@@ -83,23 +106,27 @@ export default class PersonDetails extends Component {
    */
   render() {
     const { name } = this;
-    const { address, travelMode } = this.state;
+    const { travelMode } = this.state;
 
     return (
       <Container data-component={name} className={name}>
         <form autoComplete="off">
           <FormRow>
-            <TextField
-              label="Address"
+            <div style={{ textAlign: 'left' }}>
+              <InputLabel className="input-label" htmlFor="address">
+                Address
+              </InputLabel>
+            </div>
+
+            <AddressInput
+              name="address"
+              id="address"
               placeholder="Address"
-              defaultValue={address}
-              inputProps={{
-                'aria-label': 'Address',
+              ariaLabel="Address"
+              innerRef={ref => {
+                this.refInput = ref;
               }}
-              inputLabelProps={{
-                className: 'input-label',
-              }}
-              className="search-input"
+              className="input-address"
               onChange={event => {
                 this.props.updateData('address', event.target.value);
               }}

@@ -59,7 +59,7 @@ const DrawerButton = styled.button`
   right: 0;
   z-index: 1000;
   border: 0;
-  padding: 0.25rem 1.25rem 0.5rem;
+  padding: 0.5rem 1.25rem 0.25rem;
   font-weight: 500;
   background-color: #965679;
   color: #fff;
@@ -68,11 +68,17 @@ const DrawerButton = styled.button`
   transform: translate3d(0, 0px, 0);
   transition: 0.3s transform cubic-bezier(0.82, 0.01, 1, 0.73);
   transition-delay: 350ms;
+  border: 0.25rem solid #965679;
 
   &:hover,
   &:active {
     background: #512e41;
     border-color: #512e41;
+  }
+
+  &:focus {
+    border: 0.25rem solid #512e41;
+    outline: none;
   }
 `;
 
