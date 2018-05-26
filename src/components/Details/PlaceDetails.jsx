@@ -43,6 +43,20 @@ export default class PlaceDetails extends Component {
   /**
    *
    */
+  handleTextChange = event => {
+    this.props.updateData('searchTerms', event.target.value);
+  };
+
+  /**
+   *
+   */
+  handleTextFocus = event => {
+    event.target.select();
+  };
+
+  /**
+   *
+   */
   componentDidMount() {}
 
   /**
@@ -64,25 +78,22 @@ export default class PlaceDetails extends Component {
 
     return (
       <div data-component={name} className={name}>
-        <form autoComplete="off">
-          <FormRow>
-            <TextField
-              label="Search terms"
-              placeholder="restaurant, bar, etc"
-              defaultValue={searchTerms}
-              inputProps={{
-                'aria-label': 'Search Terms',
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className="search-terms"
-              onChange={event => {
-                this.props.updateData('searchTerms', event.target.value);
-              }}
-            />
-          </FormRow>
-        </form>
+        <FormRow>
+          <TextField
+            label="Search terms"
+            placeholder="restaurant, bar, etc"
+            defaultValue={searchTerms}
+            inputProps={{
+              'aria-label': 'Search Terms',
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="search-terms"
+            onChange={this.handleTextChange}
+            onFocus={this.handleTextFocus}
+          />
+        </FormRow>
       </div>
     );
   }

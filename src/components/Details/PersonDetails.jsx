@@ -80,6 +80,20 @@ export default class PersonDetails extends Component {
   /**
    *
    */
+  handleTextChange = event => {
+    this.props.updateData('address', event.target.value);
+  };
+
+  /**
+   *
+   */
+  handleTextFocus = event => {
+    event.target.select();
+  };
+
+  /**
+   *
+   */
   componentDidMount() {
     const { address } = this.state;
 
@@ -110,53 +124,50 @@ export default class PersonDetails extends Component {
 
     return (
       <Container data-component={name} className={name}>
-        <form autoComplete="off">
-          <FormRow>
-            <div style={{ textAlign: 'left' }}>
-              <InputLabel className="input-label" htmlFor="address">
-                Address
-              </InputLabel>
-            </div>
+        <FormRow>
+          <div style={{ textAlign: 'left' }}>
+            <InputLabel className="input-label" htmlFor="address">
+              Address
+            </InputLabel>
+          </div>
 
-            <AddressInput
-              name="address"
-              id="address"
-              placeholder="Address"
-              ariaLabel="Address"
-              innerRef={ref => {
-                this.refInput = ref;
-              }}
-              className="input-address"
+          <AddressInput
+            name="address"
+            id="address"
+            placeholder="Address"
+            ariaLabel="Address"
+            innerRef={ref => {
+              this.refInput = ref;
+            }}
+            className="input-address"
+            onChange={this.handleTextChange}
+            onFocus={this.handleTextFocus}
+          />
+        </FormRow>
+
+        <FormRow>
+          <FormControl className="travel-select">
+            <InputLabel htmlFor="travel-mode">Travel Mode</InputLabel>
+            <Select
+              value={travelMode}
               onChange={event => {
-                this.props.updateData('address', event.target.value);
+                this.setState({
+                  travelMode: event.target.value,
+                });
+                this.props.updateData('travelMode', event.target.value);
               }}
-            />
-          </FormRow>
-
-          <FormRow>
-            <FormControl className="travel-select">
-              <InputLabel htmlFor="travel-mode">Travel Mode</InputLabel>
-              <Select
-                value={travelMode}
-                onChange={event => {
-                  this.setState({
-                    travelMode: event.target.value,
-                  });
-                  this.props.updateData('travelMode', event.target.value);
-                }}
-                inputProps={{
-                  name: 'travel-mode',
-                  id: 'travel-mode',
-                }}
-              >
-                <MenuItem value="WALKING">On foot</MenuItem>
-                <MenuItem value="TRANSIT">Transit</MenuItem>
-                <MenuItem value="BICYCLING">By bike</MenuItem>
-                <MenuItem value="DRIVING">By car</MenuItem>
-              </Select>
-            </FormControl>
-          </FormRow>
-        </form>
+              inputProps={{
+                name: 'travel-mode',
+                id: 'travel-mode',
+              }}
+            >
+              <MenuItem value="WALKING">On foot</MenuItem>
+              <MenuItem value="TRANSIT">Transit</MenuItem>
+              <MenuItem value="BICYCLING">By bike</MenuItem>
+              <MenuItem value="DRIVING">By car</MenuItem>
+            </Select>
+          </FormControl>
+        </FormRow>
       </Container>
     );
   }

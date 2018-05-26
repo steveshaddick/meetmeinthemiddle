@@ -24,6 +24,7 @@ const Container = styled.div`
 const TabContainer = styled.div`
   display: none;
   padding: 1rem 1rem;
+  font-size: 1.15rem;
 
   &.current-tab {
     display: block;

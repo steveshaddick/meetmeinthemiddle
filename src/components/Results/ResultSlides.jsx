@@ -6,10 +6,12 @@ import SwipeableViews from 'react-swipeable-views';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
+import ResultSlide from './ResultSlide';
+
 import { NextButton, PrevButton } from 'styles/theme';
 import styledMediaQuery from 'styles/mediaquery';
 
-const Container = styled.div`
+const Container = styled.section`
   max-width: 768px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.85);
@@ -32,10 +34,6 @@ const Container = styled.div`
   `};
 `;
 
-const ResultSlide = styled.div`
-  position: relative;
-`;
-
 /**
  *
  */
@@ -54,11 +52,53 @@ export default class ResultSlides extends Component {
   /**
    *
    */
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let newState = {};
+    const idsCache = nextProps.data.reduce((idsCache, { id }) => {
+      return (idsCache += id);
+    }, '');
+
+    if (
+      prevState.idsCache !== idsCache ||
+      nextProps.currentPlaceIndex !== prevState.currentPlaceIndex
+    ) {
+      newState.idsCache = idsCache;
+      newState.currentPlaceIndex = nextProps.currentPlaceIndex; // this is an example of the new getDerivedStateFromProps not being that great
+
+      const rnd = Math.random();
+      let meetText = 'You should totally meet at:';
+      if (rnd < 0.2) {
+        meetText = 'How about:';
+      } else if (rnd < 0.4) {
+        meetText = "Here's a spot:";
+      } else if (rnd < 0.6) {
+        meetText = 'This is nearby:';
+      } else if (rnd < 0.7) {
+        meetText = "This one's not bad:";
+      } else if (rnd < 0.8) {
+        meetText = 'What do you think of:';
+      } else if (rnd < 0.9) {
+        meetText = 'Why not:';
+      }
+
+      newState.meetText = meetText;
+    }
+
+    return newState;
+  }
+
+  /**
+   *
+   */
   constructor() {
     super();
     this.name = 'ResultSlides';
     //
-    this.state = {};
+    this.state = {
+      idsCache: '',
+      meetText: '',
+      currentPlaceIndex: 0,
+    };
   }
 
   handleChangeIndex = index => {
@@ -94,30 +134,18 @@ export default class ResultSlides extends Component {
   render() {
     const { name } = this;
     const { data, currentPlaceIndex } = this.props;
+    const { meetText } = this.state;
 
     const slides = data.map(place => {
       return (
-        <ResultSlide key={`slide_${place.id}`}>
-          <h2>{place.name}</h2>
-        </ResultSlide>
+        <ResultSlide
+          key={`slide_${place.id}`}
+          id={place.id}
+          name={place.name}
+          address={place.address}
+        />
       );
     });
-
-    const rnd = Math.random();
-    let meetText = 'You should totally meet at:';
-    if (rnd < 0.2) {
-      meetText = 'How about:';
-    } else if (rnd < 0.4) {
-      meetText = "Here's a spot:";
-    } else if (rnd < 0.6) {
-      meetText = 'This is nearby:';
-    } else if (rnd < 0.7) {
-      meetText = "This one's not bad:";
-    } else if (rnd < 0.8) {
-      meetText = 'What do you think of:';
-    } else if (rnd < 0.9) {
-      meetText = 'Why not:';
-    }
 
     return (
       <Container data-component={name} className={name}>

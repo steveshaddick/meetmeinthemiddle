@@ -90,10 +90,11 @@ export default class Results extends Component {
             id: place.place_id,
             name: place.name,
           });
-
+          console.log(place);
           newSlidesData.push({
             id: place.place_id,
             name: place.name,
+            address: place.vicinity,
           });
         }
       }
