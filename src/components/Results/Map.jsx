@@ -162,7 +162,7 @@ export default class Map extends Component {
             fullscreenControl: false,
             streetViewControl: false,
             mapTypeControl: false,
-            gestureHandling: 'cooperative',
+            //gestureHandling: 'cooperative',
           }).then(response => {
             this.map = response.map;
             this.googleMaps = response.googleMaps;

@@ -41,9 +41,42 @@ const SearchOverlay = styled.div`
   flex-direction: column;
   justify-content: center;
 
+  & .search-progress {
+    display: none !important;
+  }
+
+  & .error-message {
+    display: none !important;
+  }
+
   &.show {
     transform: translate3d(0, 0%, 0);
+
+    &.is-searching {
+      & .search-progress {
+        display: block !important;
+      }
+    }
+
+    &.is-error {
+      & .error-message {
+        display: block !important;
+      }
+    }
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: white;
+  text-align: center;
+  width: 80%;
+  margin: 0 auto;
+  background: rgba(200, 10, 10, 0.9);
+  font-weight: bold;
+  padding: 0.5rem 0.5rem;
+  max-width: 300px;
+  border-radius: 0.5rem;
+  line-height: 1.25;
 `;
 
 /**
@@ -56,6 +89,7 @@ export default class Results extends Component {
   static get propTypes() {
     return {
       isSearching: PropTypes.bool,
+      isError: PropTypes.bool,
       data: PropTypes.array,
       showResults: PropTypes.bool,
     };
@@ -177,7 +211,7 @@ export default class Results extends Component {
    */
   render() {
     const { name } = this;
-    const { isSearching, showResults } = this.props;
+    const { isSearching, showResults, isError } = this.props;
     const {
       mapData,
       slidesData,
@@ -189,10 +223,13 @@ export default class Results extends Component {
       <Container data-component={name} className={name}>
         <SearchOverlay
           className={classNames({
-            show: isSearching,
+            show: isSearching || isError,
+            'is-searching': isSearching,
+            'is-error': isError,
           })}
         >
           <CircularProgress
+            className="search-progress"
             thickness={5}
             style={{
               color: '#965679',
@@ -200,6 +237,10 @@ export default class Results extends Component {
               margin: '0 auto',
             }}
           />
+
+          <ErrorMessage className="error-message">
+            Bah! Sorry, couldn&rsquo;t find anything. Please try another search.
+          </ErrorMessage>
         </SearchOverlay>
         <Map
           data={mapData}

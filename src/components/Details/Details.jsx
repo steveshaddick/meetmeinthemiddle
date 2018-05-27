@@ -53,6 +53,7 @@ const ButtonsWrapper = styled.div`
 const SearchButton = NextButton.extend`
   font-weight: 600;
   padding-right: 0.75rem;
+  padding-bottom: 0.5rem;
   border: 2px solid #6d9656;
   color: #6d9656;
 

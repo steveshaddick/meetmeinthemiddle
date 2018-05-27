@@ -2,9 +2,10 @@ import GoogleApi from 'libs/GoogleMapsApi';
 
 class MidPointFinder {
   constructor(params) {
-    const { resultsCallback } = params;
+    const { resultsCallback, errorCallback } = params;
 
     this.resultsCallback = resultsCallback;
+    this.errorCallback = errorCallback;
 
     this.isSearching = false;
     this.searchData = null;
@@ -46,7 +47,7 @@ class MidPointFinder {
           step.start_point.lng() +
           (step.end_point.lng() - step.start_point.lng()) * percentage;
 
-        GoogleApi.nearbySearch({
+        const searchParams = {
           location: {
             lat: middleLat,
             lng: middleLng,
@@ -54,15 +55,41 @@ class MidPointFinder {
           radius: this.searchData.place.radius,
           openNow: true,
           keyword: this.searchData.place.searchTerms,
-        })
+        };
+
+        GoogleApi.nearbySearch(searchParams)
           .then(response => {
             //console.log('response', response);
             this.isSearching = false;
             this.resultsCallback(response);
           })
-          .catch(response => {
-            this.isSearching = false;
-            console.log('nearby ERROR', response);
+          .catch(() => {
+            // increase search radius
+
+            searchParams.radius = 1000;
+            GoogleApi.nearbySearch(searchParams)
+              .then(response => {
+                //console.log('response', response);
+                this.isSearching = false;
+                this.resultsCallback(response);
+              })
+              .catch(() => {
+                // increase search radius
+
+                searchParams.radius = 5000;
+                GoogleApi.nearbySearch(searchParams)
+                  .then(response => {
+                    //console.log('response', response);
+                    this.isSearching = false;
+                    this.resultsCallback(response);
+                  })
+                  .catch(response => {
+                    // give up
+                    this.isSearching = false;
+                    console.log('nearby ERROR', response);
+                    this.errorCallback(response);
+                  });
+              });
           });
         break;
       }
@@ -97,6 +124,7 @@ class MidPointFinder {
       })
       .catch(response => {
         console.log('API CATCH', response);
+        this.errorCallback(response);
       });
 
     GoogleApi.getDirections({
@@ -110,6 +138,7 @@ class MidPointFinder {
       })
       .catch(response => {
         console.log('API CATCH', response);
+        this.errorCallback(response);
       });
   }
 }

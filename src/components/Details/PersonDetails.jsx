@@ -100,8 +100,20 @@ export default class PersonDetails extends Component {
     this.refInput.value = address;
     GoogleMapsApi.createAutocomplete(this.refInput, {
       types: ['address'],
+      componentRestrictions: { country: ['ca'] },
     }).then(obj => {
       this.autocomplete = obj.autocomplete;
+      this.autocomplete.addListener('place_changed', () => {
+        const place = this.autocomplete.getPlace();
+        if (place && place.name) {
+          if (place.formatted_address) {
+            this.props.updateData('address', place.formatted_address);
+          } else if (place.name) {
+            this.props.updateData('address', place.name);
+          }
+        }
+        //console.log('changed', this.autocomplete.getPlace());
+      });
     });
   }
 

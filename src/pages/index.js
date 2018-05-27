@@ -105,12 +105,14 @@ class IndexPage extends Component {
       isDirtyData: false,
       searchingNewResults: false,
       resultsData: null,
+      resultsError: false,
     };
 
     this.refDrawerButton = null;
 
     this.midPointFinder = new MidPointFinder({
       resultsCallback: this.midPointResults,
+      errorCallback: this.midPointError,
     });
   }
 
@@ -141,6 +143,7 @@ class IndexPage extends Component {
     this.midPointFinder.find(DetailsData.get());
     this.setState({
       searchingNewResults: true,
+      resultsError: false,
     });
   };
 
@@ -148,6 +151,15 @@ class IndexPage extends Component {
     this.setState({
       searchingNewResults: false,
       resultsData: response,
+      resultsError: false,
+    });
+  };
+
+  midPointError = () => {
+    this.setState({
+      searchingNewResults: false,
+      resultsError: true,
+      resultsData: null,
     });
   };
 
@@ -164,7 +176,12 @@ class IndexPage extends Component {
   componentDidUpdate() {}
 
   render() {
-    const { detailsOpen, searchingNewResults, resultsData } = this.state;
+    const {
+      detailsOpen,
+      searchingNewResults,
+      resultsData,
+      resultsError,
+    } = this.state;
 
     return (
       <Container className={classNames({ 'details-open': detailsOpen })}>
@@ -206,6 +223,7 @@ class IndexPage extends Component {
           isSearching={searchingNewResults}
           data={resultsData}
           showResults={Array.isArray(resultsData)}
+          isError={resultsError}
         />
       </Container>
     );

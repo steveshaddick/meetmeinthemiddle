@@ -21,6 +21,9 @@ const Container = styled.section`
   height: 35vh;
   overflow-y: auto;
 
+  display: flex;
+  flex-direction: column;
+
   &:after {
     content: '';
     display: table;
@@ -35,6 +38,7 @@ const Container = styled.section`
 
 const ContentWrapper = styled.div`
   padding: 0rem 1.5rem;
+  flex: 1 0 auto;
 
   ${styledMediaQuery.minTablet`
     padding: 0.5rem 1.5rem;
@@ -77,14 +81,17 @@ export default class ResultSlides extends Component {
    *
    */
   static getDerivedStateFromProps(nextProps, prevState) {
-    let newState = {};
+    let newState = {
+      meetText: '',
+    };
     const idsCache = nextProps.data.reduce((idsCache, { id }) => {
       return (idsCache += id);
     }, '');
 
     if (
+      (idsCache !== '',
       prevState.idsCache !== idsCache ||
-      nextProps.currentPlaceIndex !== prevState.currentPlaceIndex
+        nextProps.currentPlaceIndex !== prevState.currentPlaceIndex)
     ) {
       newState.idsCache = idsCache;
       newState.currentPlaceIndex = nextProps.currentPlaceIndex; // this is an example of the new getDerivedStateFromProps not being that great
@@ -149,7 +156,6 @@ export default class ResultSlides extends Component {
    */
   componentDidUpdate(prevProps) {
     if (prevProps.currentPlaceIndex !== this.state.currentPlaceIndex) {
-      console.log(this.ref.scrollTop);
       this.ref.scrollTop = 0;
     }
   }
