@@ -5,24 +5,35 @@ import styled from 'styled-components';
 import DetailsData from 'libs/DetailsData';
 
 import { Link } from 'styles/theme';
+import { grey } from 'styles/colours';
+import styledMediaQuery from 'styles/mediaquery';
 
 const Container = styled.div`
   position: relative;
-`;
-
-const PlaceWrapper = styled.div`
-  float: left;
-  width: 75%;
+  color: ${grey};
 
   & h2 {
-    margin-bottom: 0;
+    color: black;
   }
 `;
 
+const PlaceWrapper = styled.div`
+  & h2 {
+    margin-bottom: 0;
+  }
+
+  ${styledMediaQuery.minTablet`
+    float: left;
+    width: 75%;
+  `};
+`;
+
 const UtilityWrapper = styled.div`
-  float: right;
-  text-align: right;
-  width: 25%;
+  ${styledMediaQuery.minTablet`
+    float: right;
+    text-align: right;
+    width: 25%;
+  `};
 `;
 
 const AddressWrapper = styled.div`
@@ -30,10 +41,11 @@ const AddressWrapper = styled.div`
 `;
 
 const PhotoWrapper = styled.div`
-  padding-right: 1rem;
+  margin-right: 1rem;
   height: 100px;
   width: 100px;
   background-size: cover;
+  float: left;
 `;
 
 const ResultSlide = ({
@@ -55,7 +67,6 @@ const ResultSlide = ({
         return type !== 'point_of_interest' && type !== 'establishment';
       })
     : null;
-  console.log(photos);
   return (
     <Container data-component="ResultSlide" className="ResultSlide">
       <PlaceWrapper>
@@ -83,27 +94,30 @@ const ResultSlide = ({
         )}
       </PlaceWrapper>
       <UtilityWrapper>
-        <Link
-          href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-            youAddress
-          )}&destination=${encodeURIComponent(
-            address
-          )}&destination_place_id=${id}&travelmode=${youTravelMode.toLowerCase()}`}
-          target="_blank"
-        >
-          Directions for you
-        </Link>
-        <br />
-        <Link
-          href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-            themAddress
-          )}&destination=${encodeURIComponent(
-            address
-          )}&destination_place_id=${id}&travelmode=${themTravelMode.toLowerCase()}`}
-          target="_blank"
-        >
-          Directions for them
-        </Link>
+        <p>
+          <Link
+            href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+              youAddress
+            )}&destination=${encodeURIComponent(
+              address
+            )}&destination_place_id=${id}&travelmode=${youTravelMode.toLowerCase()}`}
+            target="_blank"
+          >
+            Directions for you
+          </Link>
+        </p>
+        <p>
+          <Link
+            href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+              themAddress
+            )}&destination=${encodeURIComponent(
+              address
+            )}&destination_place_id=${id}&travelmode=${themTravelMode.toLowerCase()}`}
+            target="_blank"
+          >
+            Directions for them
+          </Link>
+        </p>
       </UtilityWrapper>
     </Container>
   );

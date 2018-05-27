@@ -14,5 +14,15 @@ module.exports = {
         fonts: [`Tajawal:400,500,600`],
       },
     },
+    {
+      resolve: 'gatsby-plugin-google-tagmanager',
+      options: {
+        id: 'GTM-5XHLW24',
+
+        // Include GTM in development.
+        // Defaults to false meaning GTM will only be loaded in production.
+        includeInDevelopment: false,
+      },
+    },
   ],
 };

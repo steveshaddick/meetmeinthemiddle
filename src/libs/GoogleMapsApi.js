@@ -143,7 +143,7 @@ const GoogleApi = {
     const placeCache = storage.getItem('hkjh');
 
     if (placeCache) {
-      console.log('cachehit', JSON.parse(placeCache));
+      //console.log('cachehit', JSON.parse(placeCache));
       return new Promise(resolve => {
         resolve(JSON.parse(placeCache));
       });
@@ -157,7 +157,7 @@ const GoogleApi = {
 
     return new Promise((resolve, reject) => {
       placesService.getDetails({ placeId }, (response, status) => {
-        console.log('got', placeId, response, status);
+        //console.log('got', placeId, response, status);
         if (status === 'OK') {
           // interesting...
           if (response.photos && response.photos.length) {

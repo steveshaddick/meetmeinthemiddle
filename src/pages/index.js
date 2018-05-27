@@ -59,7 +59,7 @@ const DrawerButton = styled.button`
   right: 0;
   z-index: 1000;
   border: 0;
-  padding: 0.5rem 1.25rem 0.25rem;
+  padding: 0.25rem 1.25rem 0.25rem;
   font-weight: 500;
   background-color: #965679;
   color: #fff;

@@ -92,7 +92,9 @@ export default class Map extends Component {
         position: place.geometry.location,
         map: this.map,
         title: place.name,
-        icon: withPrefix('/images/meetme_icon.svg'),
+        icon: {
+          url: withPrefix('/images/meetme_icon.svg'),
+        },
       });
 
       marker.addListener('click', () => {

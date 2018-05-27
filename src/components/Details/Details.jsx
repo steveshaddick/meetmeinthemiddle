@@ -16,7 +16,7 @@ import DetailsTabs from './DetailsTabs';
 import PersonDetails from './PersonDetails';
 import PlaceDetails from './PlaceDetails';
 
-const Container = styled.div`
+const Container = styled.section`
   width: 100%;
   height: 100%;
 `;

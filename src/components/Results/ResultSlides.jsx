@@ -15,12 +15,11 @@ const Container = styled.section`
   max-width: 768px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.85);
-  padding: 0rem 1.5rem;
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
-  padding-bottom: 0.5rem;
   border-bottom: 5px solid #965679;
-  min-height: 35vh;
+  height: 35vh;
+  overflow-y: auto;
 
   &:after {
     content: '';
@@ -30,7 +29,31 @@ const Container = styled.section`
 
   ${styledMediaQuery.minTablet`
     min-height: 0;
+    max-height: 305px;
+  `};
+`;
+
+const ContentWrapper = styled.div`
+  padding: 0rem 1.5rem;
+
+  ${styledMediaQuery.minTablet`
     padding: 0.5rem 1.5rem;
+  `};
+`;
+
+const ButtonsWrapper = styled.div`
+  padding: 0.5rem 1rem;
+  background: #eee;
+  margin-top: 1rem;
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  ${styledMediaQuery.minTablet`
+    padding: 1rem 2rem;
   `};
 `;
 
@@ -100,6 +123,8 @@ export default class ResultSlides extends Component {
       meetText: '',
       currentPlaceIndex: 0,
     };
+
+    this.ref = null;
   }
 
   handleChangeIndex = index => {
@@ -122,7 +147,12 @@ export default class ResultSlides extends Component {
   /**
    *
    */
-  componentDidUpdate() {}
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentPlaceIndex !== this.state.currentPlaceIndex) {
+      console.log(this.ref.scrollTop);
+      this.ref.scrollTop = 0;
+    }
+  }
 
   /**
    *
@@ -154,24 +184,35 @@ export default class ResultSlides extends Component {
     });
 
     return (
-      <Container data-component={name} className={name}>
-        <p>{meetText}</p>
+      <Container
+        data-component={name}
+        className={name}
+        innerRef={ref => {
+          this.ref = ref;
+        }}
+      >
+        <ContentWrapper>
+          <p>{meetText}</p>
 
-        <SwipeableViews
-          axis="x"
-          index={currentPlaceIndex}
-          onChangeIndex={this.handleChangeIndex}
-        >
-          {slides}
-        </SwipeableViews>
-        <NextButton size="small" onClick={this.handleNext}>
-          Next
-          <KeyboardArrowRight />
-        </NextButton>
-        <PrevButton size="small" onClick={this.handleBack}>
-          <KeyboardArrowLeft />
-          Back
-        </PrevButton>
+          <SwipeableViews
+            axis="x"
+            index={currentPlaceIndex}
+            onChangeIndex={this.handleChangeIndex}
+          >
+            {slides}
+          </SwipeableViews>
+        </ContentWrapper>
+
+        <ButtonsWrapper>
+          <NextButton size="small" onClick={this.handleNext}>
+            Next
+            <KeyboardArrowRight />
+          </NextButton>
+          <PrevButton size="small" onClick={this.handleBack}>
+            <KeyboardArrowLeft />
+            Back
+          </PrevButton>
+        </ButtonsWrapper>
       </Container>
     );
   }
