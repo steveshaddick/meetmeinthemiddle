@@ -46,6 +46,7 @@ export default class ResultSlides extends Component {
       data: PropTypes.array,
       currentPlaceIndex: PropTypes.number,
       selectCurrentPlace: PropTypes.func,
+      currentPlaceDetails: PropTypes.object,
     };
   }
 
@@ -133,16 +134,21 @@ export default class ResultSlides extends Component {
    */
   render() {
     const { name } = this;
-    const { data, currentPlaceIndex } = this.props;
+    const { data, currentPlaceIndex, currentPlaceDetails } = this.props;
     const { meetText } = this.state;
 
-    const slides = data.map(place => {
+    const slides = data.map((place, index) => {
+      const details = index === currentPlaceIndex ? currentPlaceDetails : null;
       return (
         <ResultSlide
           key={`slide_${place.id}`}
           id={place.id}
           name={place.name}
           address={place.address}
+          website={details ? details.website : null}
+          formattedAddress={details ? details.adr_address : null}
+          photos={details ? details.photos : null}
+          types={details ? details.types : null}
         />
       );
     });

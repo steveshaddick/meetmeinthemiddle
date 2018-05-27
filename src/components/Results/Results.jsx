@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import styled from 'styled-components';
 
+import GoogleApi from 'libs/GoogleMapsApi';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Map from './Map';
@@ -90,7 +92,6 @@ export default class Results extends Component {
             id: place.place_id,
             name: place.name,
           });
-          console.log(place);
           newSlidesData.push({
             id: place.place_id,
             name: place.name,
@@ -122,6 +123,8 @@ export default class Results extends Component {
       slidesData: [],
       currentPlaceIndex: null,
     };
+
+    this.gettingPlaceDetailsId = false;
   }
 
   selectCurrentPlace = newIndex => {
@@ -130,6 +133,7 @@ export default class Results extends Component {
 
     this.setState({
       currentPlaceIndex: newIndex,
+      currentPlaceDetails: {},
     });
   };
 
@@ -141,7 +145,27 @@ export default class Results extends Component {
   /**
    *
    */
-  componentDidUpdate() {}
+  componentDidUpdate(prevProps, prevState) {
+    const { currentPlaceIndex, slidesData } = this.state;
+
+    // I don't love this. Maybe this is actually better lower down, like in the individual slide.
+    if (prevState.currentPlaceIndex !== currentPlaceIndex) {
+      if (slidesData.length && slidesData[currentPlaceIndex]) {
+        const placeId = slidesData[currentPlaceIndex].id;
+        if (this.gettingPlaceDetailsId !== placeId) {
+          this.gettingPlaceDetailsId = placeId;
+          GoogleApi.getPlaceDetails(placeId).then(response => {
+            if (this.gettingPlaceDetailsId === placeId) {
+              this.gettingPlaceDetailsId = false;
+              this.setState({
+                currentPlaceDetails: response,
+              });
+            }
+          });
+        }
+      }
+    }
+  }
 
   /**
    *
@@ -154,7 +178,12 @@ export default class Results extends Component {
   render() {
     const { name } = this;
     const { isSearching, showResults } = this.props;
-    const { mapData, slidesData, currentPlaceIndex } = this.state;
+    const {
+      mapData,
+      slidesData,
+      currentPlaceIndex,
+      currentPlaceDetails,
+    } = this.state;
 
     return (
       <Container data-component={name} className={name}>
@@ -181,6 +210,7 @@ export default class Results extends Component {
         <ResultSlides
           data={slidesData}
           selectCurrentPlace={this.selectCurrentPlace}
+          currentPlaceDetails={currentPlaceDetails}
           currentPlaceIndex={currentPlaceIndex}
         />
       </Container>

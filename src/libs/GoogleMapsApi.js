@@ -1,5 +1,6 @@
 //import axios from 'axios';
 //import queryString from 'query-string';
+import storage from 'local-storage-fallback';
 
 const GOOGLE_MAPS_KEY = 'AIzaSyB5LJvHzh4qM4--_qxMLLunCEF3w_Tc3X4';
 
@@ -133,6 +134,42 @@ const GoogleApi = {
       resolve({
         googleMaps,
         map: new googleMaps.Map(element, parameters),
+      });
+    });
+  },
+
+  getPlaceDetails: placeId => {
+    // let's assume the googlemaps sdk has loaded
+    const placeCache = storage.getItem('hkjh');
+
+    if (placeCache) {
+      console.log('cachehit', JSON.parse(placeCache));
+      return new Promise(resolve => {
+        resolve(JSON.parse(placeCache));
+      });
+    }
+
+    if (!placesService) {
+      placesService = new googleMaps.places.PlacesService(
+        document.createElement('div')
+      );
+    }
+
+    return new Promise((resolve, reject) => {
+      placesService.getDetails({ placeId }, (response, status) => {
+        console.log('got', placeId, response, status);
+        if (status === 'OK') {
+          // interesting...
+          if (response.photos && response.photos.length) {
+            response.photos[0].url = response.photos[0].getUrl({
+              maxWidth: 300,
+            });
+          }
+          storage.setItem(placeId, JSON.stringify(response));
+          resolve(response);
+        } else {
+          reject(response);
+        }
       });
     });
   },

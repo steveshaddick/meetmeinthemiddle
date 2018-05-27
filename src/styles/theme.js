@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
+import { darkPurple, purple } from './colours';
+
 export const Button = styled.button`
   border: 0;
   cursor: pointer;
   background: none;
-  color: #965679;
+  color: ${purple};
   font-weight: 500;
   padding: 0.5rem 0 0.25rem;
   margin: 0;
@@ -27,11 +29,11 @@ export const Button = styled.button`
   &:enabled {
     &:hover,
     &:active {
-      border-color: #965679;
+      border-color: ${purple};
     }
 
     &:focus {
-      border-color: #965679;
+      border-color: ${purple};
       outline: none;
     }
   }
@@ -66,5 +68,39 @@ export const PrevButton = Button.extend`
         transform: translate3d(-2px, 0, 0);
       }
     }
+  }
+`;
+
+export const Link = styled.a`
+  color: ${purple};
+  position: relative;
+  text-decoration: none;
+
+  transition: 300ms color;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    background-color: ${purple};
+    width: 100%;
+    height: 1px;
+    bottom: 1px;
+    right: 0;
+
+    transition: 300ms width, 300ms background-color;
+  }
+
+  &:hover,
+  &:active {
+    color: ${darkPurple};
+    &:after {
+      background-color: ${darkPurple};
+      width: 0%;
+    }
+  }
+
+  &:focus {
+    outline-color: ${darkPurple};
   }
 `;
