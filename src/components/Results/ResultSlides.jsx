@@ -8,8 +8,8 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import ResultSlide from './ResultSlide';
 
-import { NextButton, PrevButton } from 'styles/theme';
 import styledMediaQuery from 'styles/mediaquery';
+import { purple } from 'styles/colours';
 
 const Container = styled.section`
   max-width: 768px;
@@ -19,7 +19,6 @@ const Container = styled.section`
   border-top-left-radius: 1rem;
   border-bottom: 5px solid #965679;
   height: 35vh;
-  overflow-y: auto;
 
   display: flex;
   flex-direction: column;
@@ -36,28 +35,99 @@ const Container = styled.section`
   `};
 `;
 
+const ScrollContainer = styled.div`
+  height: 100%;
+  overflow-y: auto;
+`;
+
 const ContentWrapper = styled.div`
-  padding: 0rem 1.5rem;
+  padding: 1rem 0.25rem;
   flex: 1 0 auto;
 
   ${styledMediaQuery.minTablet`
-    padding: 0.5rem 1.5rem;
+    padding: 1rem 0rem;
   `};
 `;
 
-const ButtonsWrapper = styled.div`
-  padding: 0.5rem 1rem;
-  background: #eee;
-  margin-top: 1rem;
+const ButtonWrapper = styled.div`
+  position: absolute;
+  width: 30px;
+  height: 50px;
+  bottom: 0px;
 
-  &:after {
-    content: '';
-    display: table;
-    clear: both;
+  & button {
+    border: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.85);
+
+    & svg {
+      position: absolute;
+      top: 50%;
+      margin-top: -0.5em;
+      left: 50%;
+      margin-left: -0.5em;
+      color: ${purple};
+      transform: translate3d(0px, 0, 0);
+      transition: transform 300ms ease-in-out;
+    }
+
+    &:hover {
+      background-color: ${purple};
+
+      & svg {
+        color: #fff;
+      }
+    }
+  }
+
+  &.prevButton {
+    left: 0;
+
+    & button {
+      &:hover,
+      &:focus {
+        svg {
+          transform: translate3d(-3px, 0, 0);
+        }
+      }
+    }
+  }
+
+  &.nextButton {
+    right: 0;
+
+    & button {
+      &:hover,
+      &:focus {
+        svg {
+          transform: translate3d(3px, 0, 0);
+        }
+      }
+    }
   }
 
   ${styledMediaQuery.minTablet`
-    padding: 1rem 2rem;
+    height: 100px;
+
+    &.prevButton {
+      left: -30px;
+
+      & button {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+      }
+    }
+
+    &.nextButton {
+      right: -30px;
+
+      & button {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
+    }
   `};
 `;
 
@@ -81,9 +151,7 @@ export default class ResultSlides extends Component {
    *
    */
   static getDerivedStateFromProps(nextProps, prevState) {
-    let newState = {
-      meetText: '',
-    };
+    let newState = {};
     const idsCache = nextProps.data.reduce((idsCache, { id }) => {
       return (idsCache += id);
     }, '');
@@ -95,24 +163,6 @@ export default class ResultSlides extends Component {
     ) {
       newState.idsCache = idsCache;
       newState.currentPlaceIndex = nextProps.currentPlaceIndex; // this is an example of the new getDerivedStateFromProps not being that great
-
-      const rnd = Math.random();
-      let meetText = 'You should totally meet at:';
-      if (rnd < 0.2) {
-        meetText = 'How about:';
-      } else if (rnd < 0.4) {
-        meetText = "Here's a spot:";
-      } else if (rnd < 0.6) {
-        meetText = 'This is nearby:';
-      } else if (rnd < 0.7) {
-        meetText = "This one's not bad:";
-      } else if (rnd < 0.8) {
-        meetText = 'What do you think of:';
-      } else if (rnd < 0.9) {
-        meetText = 'Why not:';
-      }
-
-      newState.meetText = meetText;
     }
 
     return newState;
@@ -127,7 +177,6 @@ export default class ResultSlides extends Component {
     //
     this.state = {
       idsCache: '',
-      meetText: '',
       currentPlaceIndex: 0,
     };
 
@@ -171,7 +220,6 @@ export default class ResultSlides extends Component {
   render() {
     const { name } = this;
     const { data, currentPlaceIndex, currentPlaceDetails } = this.props;
-    const { meetText } = this.state;
 
     const slides = data.map((place, index) => {
       const details = index === currentPlaceIndex ? currentPlaceDetails : null;
@@ -197,28 +245,29 @@ export default class ResultSlides extends Component {
           this.ref = ref;
         }}
       >
-        <ContentWrapper>
-          <p>{meetText}</p>
+        <ScrollContainer>
+          <ContentWrapper>
+            <SwipeableViews
+              axis="x"
+              index={currentPlaceIndex}
+              onChangeIndex={this.handleChangeIndex}
+            >
+              {slides}
+            </SwipeableViews>
+          </ContentWrapper>
+        </ScrollContainer>
 
-          <SwipeableViews
-            axis="x"
-            index={currentPlaceIndex}
-            onChangeIndex={this.handleChangeIndex}
-          >
-            {slides}
-          </SwipeableViews>
-        </ContentWrapper>
-
-        <ButtonsWrapper>
-          <NextButton size="small" onClick={this.handleNext}>
-            Next
+        <ButtonWrapper className="nextButton">
+          <button onClick={this.handleNext}>
             <KeyboardArrowRight />
-          </NextButton>
-          <PrevButton size="small" onClick={this.handleBack}>
+          </button>
+        </ButtonWrapper>
+
+        <ButtonWrapper className="prevButton">
+          <button onClick={this.handleBack}>
             <KeyboardArrowLeft />
-            Back
-          </PrevButton>
-        </ButtonsWrapper>
+          </button>
+        </ButtonWrapper>
       </Container>
     );
   }

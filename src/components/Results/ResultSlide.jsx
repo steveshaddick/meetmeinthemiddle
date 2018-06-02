@@ -11,6 +11,7 @@ import styledMediaQuery from 'styles/mediaquery';
 const Container = styled.div`
   position: relative;
   color: ${grey};
+  margin: 0 1rem;
 
   & h2 {
     color: black;
@@ -18,14 +19,20 @@ const Container = styled.div`
 `;
 
 const PlaceWrapper = styled.div`
-  & h2 {
-    margin-bottom: 0;
-  }
+  display: flex;
 
   ${styledMediaQuery.minTablet`
     float: left;
     width: 75%;
   `};
+`;
+
+const PlaceContentWrapper = styled.div`
+  position: relative;
+
+  & h2 {
+    margin-bottom: 0;
+  }
 `;
 
 const UtilityWrapper = styled.div`
@@ -43,7 +50,7 @@ const AddressWrapper = styled.div`
 const PhotoWrapper = styled.div`
   margin-right: 1rem;
   height: 100px;
-  width: 100px;
+  width: calc(100px + 1rem);
   background-size: cover;
   float: left;
 `;
@@ -79,19 +86,21 @@ const ResultSlide = ({
             />
           )}
 
-        <h2>{name}</h2>
-        <p>{filteredTypes && filteredTypes.join(', ')}</p>
-        {website && (
-          <Link href={website} target="_blank">
-            {website}
-          </Link>
-        )}
+        <PlaceContentWrapper>
+          <h2>{name}</h2>
+          <p>{filteredTypes && filteredTypes.join(', ')}</p>
+          {website && (
+            <Link href={website} target="_blank">
+              {website}
+            </Link>
+          )}
 
-        {formattedAddress && (
-          <AddressWrapper
-            dangerouslySetInnerHTML={{ __html: formattedAddress }}
-          />
-        )}
+          {formattedAddress && (
+            <AddressWrapper
+              dangerouslySetInnerHTML={{ __html: formattedAddress }}
+            />
+          )}
+        </PlaceContentWrapper>
       </PlaceWrapper>
       <UtilityWrapper>
         <p>
