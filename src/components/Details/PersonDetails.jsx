@@ -179,6 +179,7 @@ export default class PersonDetails extends Component {
 
               if (Array.isArray(response) && response.length) {
                 this.refInput.value = response[0].formatted_address;
+                this.props.updateData('address', response[0].formatted_address);
               } else {
                 alert("Sorry, couldn't figure out an address where you are.");
               }

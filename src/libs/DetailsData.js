@@ -4,12 +4,12 @@ import queryString from 'query-string';
 
 let data = {
   you: {
-    address: '104 Manning Ave, Toronto, ON',
+    address: '',
     travelMode: 'WALKING',
   },
   them: {
-    address: '34 Maccaulay, Toronto, ON',
-    travelMode: 'BICYCLING',
+    address: '',
+    travelMode: 'WALKING',
   },
   place: {
     searchTerms: '',
@@ -55,18 +55,24 @@ const DetailsData = {
   parseUrl: () => {
     const parsed = queryString.parse(location.search);
 
-    const newData = {
-      you: {
-        address: parsed.ya ? decodeURI(parsed.ya) : undefined,
-        travelMode: parsed.yt ? parsed.yt : undefined,
-      },
-      them: {
-        address: parsed.ta ? decodeURI(parsed.ta) : undefined,
-        travelMode: parsed.tt ? parsed.tt : undefined,
-      },
-    };
+    if (parsed.ya && parsed.ta) {
+      const newData = {
+        you: {
+          address: decodeURI(parsed.ya),
+          travelMode: parsed.yt ? parsed.yt : undefined,
+        },
+        them: {
+          address: decodeURI(parsed.ta),
+          travelMode: parsed.tt ? parsed.tt : undefined,
+        },
+      };
 
-    DetailsData.update(newData);
+      DetailsData.update(newData);
+
+      return true;
+    }
+
+    return false;
   },
 
   getShareUrl: () => {
