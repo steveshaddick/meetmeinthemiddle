@@ -167,6 +167,7 @@ class IndexPage extends Component {
    *
    */
   componentDidMount() {
+    DetailsData.parseUrl();
     this.findMidPoint();
   }
 

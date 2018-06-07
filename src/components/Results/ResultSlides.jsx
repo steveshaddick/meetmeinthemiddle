@@ -3,13 +3,19 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import SwipeableViews from 'react-swipeable-views';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import Modal from '@material-ui/core/Modal';
+
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import ShareIcon from '@material-ui/icons/Share';
 
 import ResultSlide from './ResultSlide';
 
+import { NextButton } from 'styles/theme';
 import styledMediaQuery from 'styles/mediaquery';
 import { purple } from 'styles/colours';
+
+import DetailsData from 'libs/DetailsData';
 
 const Container = styled.section`
   max-width: 768px;
@@ -73,7 +79,8 @@ const ButtonWrapper = styled.div`
       transition: transform 300ms ease-in-out;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
       background-color: ${purple};
 
       & svg {
@@ -131,6 +138,105 @@ const ButtonWrapper = styled.div`
   `};
 `;
 
+const ShareButtonWrapper = styled.div`
+  position: absolute;
+  top: 24px;
+  right: calc(-0.5rem - 18px);
+`;
+
+const ShareButton = styled.button`
+  border: 0;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+
+  & .button-inner {
+    background: rgba(255, 255, 255, 0.75);
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 0.5rem 0.35rem 0.5rem 0.15rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  & svg {
+    color: ${purple};
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+  }
+
+  & .share-title {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.75rem;
+    display: block;
+    width: 5rem;
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.75);
+    color: ${purple};
+    z-index: 10;
+
+    transform: translate3d(5.5rem, 0, 0);
+    transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+  }
+
+  &:hover,
+  &:focus {
+    & .button-inner {
+      background: ${purple};
+    }
+
+    & .share-title {
+      opacity: 1;
+      transform: translate3d(4.5rem, 0, 0);
+    }
+
+    & svg {
+      color: #fff;
+    }
+  }
+`;
+
+const ModalBoxWrapper = styled.div`
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  outline: none;
+`;
+
+const ModalBox = styled.div`
+  width: 20rem;
+  background: #fff;
+  padding: 2rem 2rem 1rem;
+  border-top: 5px solid ${purple};
+
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+
+  & .share-text {
+    display: block;
+    color: #aaa;
+  }
+
+  & .share-url {
+    border: 1px solid #eee;
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+`;
+
+const CloseModalButton = NextButton.extend`
+  padding-right: 0.5rem;
+  padding-left: 0.25rem;
+
+  font-size: 0.85rem;
+`;
+
 /**
  *
  */
@@ -178,6 +284,7 @@ export default class ResultSlides extends Component {
     this.state = {
       idsCache: '',
       currentPlaceIndex: 0,
+      modalOpen: false,
     };
 
     this.ref = null;
@@ -193,6 +300,28 @@ export default class ResultSlides extends Component {
 
   handleBack = () => {
     this.props.selectCurrentPlace(this.props.currentPlaceIndex - 1);
+  };
+
+  /**
+   *
+   */
+  handleModalOpen = () => {
+    this.setState({
+      modalOpen: true,
+    });
+  };
+
+  handleModalClose = () => {
+    this.setState({
+      modalOpen: false,
+    });
+  };
+
+  /**
+   *
+   */
+  handleShareUrlFocus = event => {
+    event.target.select();
   };
 
   /**
@@ -220,6 +349,7 @@ export default class ResultSlides extends Component {
   render() {
     const { name } = this;
     const { data, currentPlaceIndex, currentPlaceDetails } = this.props;
+    const { modalOpen } = this.state;
 
     const slides = data.map((place, index) => {
       const details = index === currentPlaceIndex ? currentPlaceDetails : null;
@@ -237,6 +367,8 @@ export default class ResultSlides extends Component {
       );
     });
 
+    const shareUrl = modalOpen ? DetailsData.getShareUrl() : '';
+
     return (
       <Container
         data-component={name}
@@ -245,6 +377,38 @@ export default class ResultSlides extends Component {
           this.ref = ref;
         }}
       >
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={modalOpen}
+          onClose={this.handleModalClose}
+        >
+          <ModalBoxWrapper>
+            <ModalBox>
+              <span className="share-text">Share this url:</span>
+              <input
+                className="share-url"
+                onFocus={this.handleShareUrlFocus}
+                onSelect={this.handleShareUrlFocus}
+                readOnly="readonly"
+                value={shareUrl}
+              />
+              <CloseModalButton onClick={this.handleModalClose}>
+                Close
+              </CloseModalButton>
+            </ModalBox>
+          </ModalBoxWrapper>
+        </Modal>
+
+        <ShareButtonWrapper>
+          <ShareButton onClick={this.handleModalOpen}>
+            <div className="share-title">Share URL</div>
+            <div className="button-inner">
+              <ShareIcon />
+            </div>
+          </ShareButton>
+        </ShareButtonWrapper>
+
         <ScrollContainer>
           <ContentWrapper>
             <SwipeableViews
@@ -259,13 +423,13 @@ export default class ResultSlides extends Component {
 
         <ButtonWrapper className="nextButton">
           <button onClick={this.handleNext}>
-            <KeyboardArrowRight />
+            <KeyboardArrowRightIcon />
           </button>
         </ButtonWrapper>
 
         <ButtonWrapper className="prevButton">
           <button onClick={this.handleBack}>
-            <KeyboardArrowLeft />
+            <KeyboardArrowLeftIcon />
           </button>
         </ButtonWrapper>
       </Container>

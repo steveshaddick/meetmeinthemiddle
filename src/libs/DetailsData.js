@@ -1,5 +1,6 @@
 import merge from 'lodash.merge';
 import cloneDeep from 'lodash.clonedeep';
+import queryString from 'query-string';
 
 let data = {
   you: {
@@ -21,6 +22,7 @@ let tmpData = cloneDeep(data);
 const DetailsData = {
   update: newData => {
     data = merge(data, newData);
+    tmpData = cloneDeep(data);
     return data;
   },
 
@@ -48,6 +50,31 @@ const DetailsData = {
 
   clone: type => {
     return type ? cloneDeep(data[type]) : cloneDeep(data);
+  },
+
+  parseUrl: () => {
+    const parsed = queryString.parse(location.search);
+
+    const newData = {
+      you: {
+        address: parsed.ya ? decodeURI(parsed.ya) : undefined,
+        travelMode: parsed.yt ? parsed.yt : undefined,
+      },
+      them: {
+        address: parsed.ta ? decodeURI(parsed.ta) : undefined,
+        travelMode: parsed.tt ? parsed.tt : undefined,
+      },
+    };
+
+    DetailsData.update(newData);
+  },
+
+  getShareUrl: () => {
+    return `${window.location.protocol}//${window.location.host}?ya=${encodeURI(
+      data.you.address
+    )}&yt=${data.you.travelMode}&ta=${encodeURI(data.them.address)}&tt=${
+      data.them.travelMode
+    }`;
   },
 };
 
