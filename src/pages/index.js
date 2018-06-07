@@ -10,6 +10,8 @@ import Drawer from '@material-ui/core/Drawer';
 import Details from 'components/Details/Details';
 import Results from 'components/Results/Results';
 
+import { dataLayerPush } from 'libs/GTM';
+
 const Container = styled.div`
   &.details-open {
     .drawer-button {
@@ -144,6 +146,9 @@ class IndexPage extends Component {
     this.setState({
       searchingNewResults: true,
       resultsError: false,
+    });
+    dataLayerPush({
+      event: 'sendingSearch',
     });
   };
 

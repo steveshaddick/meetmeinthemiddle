@@ -16,6 +16,7 @@ import styledMediaQuery from 'styles/mediaquery';
 import { purple } from 'styles/colours';
 
 import DetailsData from 'libs/DetailsData';
+import { dataLayerPush } from 'libs/GTM';
 
 const Container = styled.section`
   max-width: 768px;
@@ -320,6 +321,9 @@ export default class ResultSlides extends Component {
   handleModalOpen = () => {
     this.setState({
       modalOpen: true,
+    });
+    dataLayerPush({
+      event: 'showShareUrl',
     });
   };
 
