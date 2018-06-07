@@ -11,6 +11,7 @@ let callbacks = [];
 
 let directionsService = null;
 let placesService = null;
+let geocoder = null;
 
 /**
  *
@@ -190,6 +191,38 @@ const GoogleApi = {
       resolve({
         googleMaps,
         autocomplete: new googleMaps.places.Autocomplete(element, options),
+      });
+    });
+  },
+
+  geocodeLatLng: params => {
+    if (!googleMaps) {
+      return new Promise(resolve => {
+        callbacks.push(() => {
+          GoogleApi.geocodeLatLng(params).then(response => {
+            resolve(response);
+          });
+        });
+        GoogleApi.loadSDK(GOOGLE_MAPS_KEY);
+      });
+    }
+
+    if (!geocoder) {
+      geocoder = new googleMaps.Geocoder();
+    }
+
+    return new Promise((resolve, reject) => {
+      const latlng = {
+        lat: params.lat,
+        lng: params.lng,
+      };
+
+      geocoder.geocode({ location: latlng }, (results, status) => {
+        if (status === 'OK') {
+          resolve(results);
+        } else {
+          reject(status);
+        }
       });
     });
   },

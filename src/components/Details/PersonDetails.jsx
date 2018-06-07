@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
-import { purple } from 'styles/colours';
+import classnames from 'classnames';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import NearMeIcon from '@material-ui/icons/NearMe';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { purple, darkPurple } from 'styles/colours';
+import styledMediaQuery from 'styles/mediaquery';
 
 import GoogleMapsApi from 'libs/GoogleMapsApi';
 
@@ -17,6 +22,12 @@ const Container = styled.div`
 
   & form {
     margin: 0;
+  }
+
+  &.is-you {
+    & .input-address {
+      width: calc(100% - 4rem);
+    }
   }
 `;
 
@@ -47,6 +58,64 @@ const AddressInput = styled.input`
   }
 `;
 
+const NearMeButton = styled.button`
+  border: 0;
+  background: ${purple};
+  cursor: pointer;
+  width: 2.5rem;
+  height: 1.75rem;
+  margin-left: 1rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  padding-right: 0.5rem;
+
+  & svg {
+    color: #fff;
+    vertical-align: middle;
+  }
+
+  & .nearme-icon {
+    width: 20px;
+    height: 20px;
+    ${styledMediaQuery.minTablet`
+      width: 1em;
+      height: 1em;
+    `};
+  }
+
+  & .progress-icon {
+    display: none;
+    width: 20px !important;
+    height: 20px !important;
+
+    ${styledMediaQuery.minTablet`
+      width: 30px !important;
+      height: 30px !important;
+    `};
+  }
+
+  &:enabled {
+    &:hover,
+    &:focus {
+      background: ${darkPurple};
+    }
+  }
+
+  &.progress {
+    & .progress-icon {
+      display: inline-block;
+    }
+    & .nearme-icon {
+      display: none;
+    }
+  }
+
+  ${styledMediaQuery.minTablet`
+    width: 3rem;
+    height: 2rem;
+  `};
+`;
+
 /**
  *
  */
@@ -56,8 +125,18 @@ export default class PersonDetails extends Component {
    */
   static get propTypes() {
     return {
+      isYou: PropTypes.bool,
       initialData: PropTypes.object,
       updateData: PropTypes.func,
+    };
+  }
+
+  /**
+   *
+   */
+  static get defaultProps() {
+    return {
+      isYou: false,
     };
   }
 
@@ -74,7 +153,54 @@ export default class PersonDetails extends Component {
     };
 
     this.refInput = null;
+    this.refNearMeButton = null;
     this.autocomplete = null;
+  }
+
+  /**
+   *
+   */
+  getGeolocation() {
+    if (navigator.geolocation) {
+      this.refNearMeButton.disabled = true;
+      this.refNearMeButton.classList.add('progress');
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+
+          GoogleMapsApi.geocodeLatLng(pos)
+            .then(response => {
+              this.refNearMeButton.disabled = false;
+              this.refNearMeButton.classList.remove('progress');
+
+              if (Array.isArray(response) && response.length) {
+                this.refInput.value = response[0].formatted_address;
+              } else {
+                alert("Sorry, couldn't figure out an address where you are.");
+              }
+            })
+            .catch(() => {
+              this.refNearMeButton.disabled = false;
+              this.refNearMeButton.classList.remove('progress');
+              alert('Sorry, there was some sort of error.');
+            });
+        },
+        () => {
+          this.refNearMeButton.disabled = false;
+          this.refNearMeButton.classList.remove('progress');
+          alert(
+            'There was an error - location finding has probably been blocked.'
+          );
+        }
+      );
+    } else {
+      // Browser doesn't support Geolocation
+      alert("Sorry, your browser doesn't support this feature.");
+    }
   }
 
   /**
@@ -89,6 +215,13 @@ export default class PersonDetails extends Component {
    */
   handleTextFocus = event => {
     event.target.select();
+  };
+
+  /**
+   *
+   */
+  handleNearMeClick = () => {
+    this.getGeolocation();
   };
 
   /**
@@ -133,9 +266,14 @@ export default class PersonDetails extends Component {
   render() {
     const { name } = this;
     const { travelMode } = this.state;
+    const { isYou } = this.props;
+
+    const classes = classnames(name, {
+      'is-you': isYou,
+    });
 
     return (
-      <Container data-component={name} className={name}>
+      <Container data-component={name} className={classes}>
         <FormRow>
           <div style={{ textAlign: 'left' }}>
             <InputLabel className="input-label" htmlFor="address">
@@ -155,6 +293,19 @@ export default class PersonDetails extends Component {
             onChange={this.handleTextChange}
             onFocus={this.handleTextFocus}
           />
+
+          {isYou && (
+            <NearMeButton
+              onClick={this.handleNearMeClick}
+              disabled={!navigator.geolocation}
+              innerRef={ref => {
+                this.refNearMeButton = ref;
+              }}
+            >
+              <NearMeIcon className="nearme-icon" />
+              <CircularProgress className="progress-icon" />
+            </NearMeButton>
+          )}
         </FormRow>
 
         <FormRow>

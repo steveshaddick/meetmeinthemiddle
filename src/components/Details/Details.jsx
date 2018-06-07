@@ -214,6 +214,7 @@ export default class Details extends Component {
         >
           <p>Where are you at?</p>
           <PersonDetails
+            isYou={true}
             initialData={DetailsData.get('you')}
             updateData={(key, value) => {
               this.updateData('you', key, value);
