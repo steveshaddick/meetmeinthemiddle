@@ -140,8 +140,15 @@ const ButtonWrapper = styled.div`
 
 const ShareButtonWrapper = styled.div`
   position: absolute;
-  top: 24px;
-  right: calc(-0.5rem - 18px);
+  top: calc(-100vh + 35vh + 5px);
+  right: auto;
+  left: 0;
+
+  ${styledMediaQuery.minTablet`
+    top: 24px;
+    right: calc(-0.5rem - 18px);
+    left: auto;
+  `};
 `;
 
 const ShareButton = styled.button`
@@ -151,12 +158,17 @@ const ShareButton = styled.button`
   padding: 0;
 
   & .button-inner {
-    background: rgba(255, 255, 255, 0.75);
-    border-top-right-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.85);
     border-bottom-right-radius: 0.25rem;
-    padding: 0.5rem 0.35rem 0.5rem 0.15rem;
+    padding: 0.5rem 0.75rem;
     position: relative;
     z-index: 10;
+
+    ${styledMediaQuery.minTablet`
+      border-top-right-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+      padding: 0.5rem 0.35rem 0.5rem 0.15rem;
+    `};
   }
 
   & svg {
