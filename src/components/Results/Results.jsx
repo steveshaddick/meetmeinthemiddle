@@ -10,6 +10,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Map from './Map';
 import ResultSlides from './ResultSlides';
 
+import styledMediaQuery from 'styles/mediaquery';
+
 const Container = styled.div`
   width: 100%;
   height: 100vh;
@@ -24,6 +26,30 @@ const Container = styled.div`
     margin: 0 auto;
     left: 0;
     right: 0;
+
+    transition: transform 300ms ease-in-out;
+    transform: translate3d(0, 35vh, 0);
+
+    ${styledMediaQuery.minTablet`
+      transform: translate3d(0, 305px, 0);
+    `};
+  }
+
+  & .Map {
+    height: 100vh;
+  }
+
+  &.has-slides {
+    & .ResultSlides {
+      transform: translate3d(0, 0, 0);
+    }
+
+    & .Map {
+      height: 65vh;
+      ${styledMediaQuery.minTablet`
+        height: 100vh;
+      `};
+    }
   }
 `;
 
@@ -220,7 +246,12 @@ export default class Results extends Component {
     } = this.state;
 
     return (
-      <Container data-component={name} className={name}>
+      <Container
+        data-component={name}
+        className={classNames(name, {
+          'has-slides': Array.isArray(slidesData) && slidesData.length,
+        })}
+      >
         <SearchOverlay
           className={classNames({
             show: isSearching || isError,

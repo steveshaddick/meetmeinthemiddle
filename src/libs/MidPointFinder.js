@@ -125,6 +125,7 @@ class MidPointFinder {
       .catch(response => {
         console.log('API CATCH', response);
         this.errorCallback(response);
+        this.isSearching = false;
       });
 
     GoogleApi.getDirections({
@@ -139,6 +140,7 @@ class MidPointFinder {
       .catch(response => {
         console.log('API CATCH', response);
         this.errorCallback(response);
+        this.isSearching = false;
       });
   }
 }

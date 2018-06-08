@@ -54,6 +54,7 @@ const SearchButton = NextButton.extend`
   font-weight: 600;
   padding-right: 0.75rem;
   padding-bottom: 0.5rem;
+  padding-top: 0.75rem;
   border: 2px solid #6d9656;
   color: #6d9656;
 
@@ -79,6 +80,7 @@ const CloseButtonWrapper = styled.div`
   width: 100%;
   height: 4rem;
   overflow: hidden;
+  outline: none;
 `;
 
 const CloseButton = styled.button`

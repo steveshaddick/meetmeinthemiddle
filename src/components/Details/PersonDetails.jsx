@@ -52,6 +52,7 @@ const AddressInput = styled.input`
   border: none;
   border-bottom: 1px solid #999;
   font-size: 1.1rem;
+  outline: none;
 
   &:focus {
     border-color: ${purple};
@@ -68,6 +69,7 @@ const NearMeButton = styled.button`
   border-top-right-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   padding-right: 0.5rem;
+  outline: none;
 
   & svg {
     color: #fff;

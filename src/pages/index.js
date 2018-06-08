@@ -10,6 +10,9 @@ import Drawer from '@material-ui/core/Drawer';
 import Details from 'components/Details/Details';
 import Results from 'components/Results/Results';
 
+import { purple, darkPurple } from 'styles/colours';
+import styledMediaQuery from 'styles/mediaquery';
+
 import { dataLayerPush } from 'libs/GTM';
 
 const Container = styled.div`
@@ -42,6 +45,7 @@ const DetailsDrawer = styled(Drawer)`
     max-width: 768px;
     margin: 0 auto;
     border-bottom: 5px solid #965679;
+    outline: none;
   }
 `;
 
@@ -84,6 +88,61 @@ const DrawerButton = styled.button`
   }
 `;
 
+const IntroSectionWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  z-index: 10;
+`;
+
+const IntroSection = styled.div`
+  background: rgba(255, 255, 255, 0.85);
+  border-top: 5px solid ${purple};
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 1rem;
+
+  & h1 {
+    color: ${darkPurple};
+  }
+
+  & p {
+    margin-bottom: 2rem;
+  }
+
+  ${styledMediaQuery.minTablet`
+    height: 300px;
+    padding: 3rem;
+  `};
+`;
+
+const SearchButton = styled.button`
+  border: 2px solid ${purple};
+  background: ${purple};
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  padding: 0.75rem 0.75rem 0.5rem 0.5rem;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+
+  &:hover,
+  &:focus {
+    background: ${darkPurple};
+    border-color: ${darkPurple};
+  }
+`;
+
 /**
  *
  */
@@ -108,6 +167,7 @@ class IndexPage extends Component {
       searchingNewResults: false,
       resultsData: null,
       resultsError: false,
+      initialState: true,
     };
 
     this.refDrawerButton = null;
@@ -146,6 +206,7 @@ class IndexPage extends Component {
     this.setState({
       searchingNewResults: true,
       resultsError: false,
+      initialState: false,
     });
     dataLayerPush({
       event: 'sendingSearch',
@@ -190,6 +251,7 @@ class IndexPage extends Component {
       searchingNewResults,
       resultsData,
       resultsError,
+      initialState,
     } = this.state;
 
     return (
@@ -227,6 +289,26 @@ class IndexPage extends Component {
             Search
           </DrawerButton>
         </DrawerButtonWrapper>
+
+        {initialState && (
+          <IntroSectionWrapper>
+            <IntroSection>
+              <div className="content-wrapper">
+                <h1>Meet Me In The Middle</h1>
+                <p>
+                  The most direct path to equality is somewhere in the middle.
+                </p>
+                <SearchButton
+                  onClick={() => {
+                    this.openDrawer();
+                  }}
+                >
+                  Search
+                </SearchButton>
+              </div>
+            </IntroSection>
+          </IntroSectionWrapper>
+        )}
 
         <Results
           isSearching={searchingNewResults}
