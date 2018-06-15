@@ -28,9 +28,9 @@ class Layout extends Component {
           meta={[
             {
               name: 'description',
-              content: 'When you want to meet somewhere in the middle.',
+              content:
+                "When you want to meet somewhere in the middle, but you don't know where.",
             },
-            { name: 'keywords', content: 'sample, something' },
           ]}
         />
 

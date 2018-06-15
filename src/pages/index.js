@@ -296,7 +296,8 @@ class IndexPage extends Component {
               <div className="content-wrapper">
                 <h1>Meet Me In The Middle</h1>
                 <p>
-                  The most direct path to equality is somewhere in the middle.
+                  The most direct path to compromise is <br />somewhere in the
+                  middle.
                 </p>
                 <SearchButton
                   onClick={() => {

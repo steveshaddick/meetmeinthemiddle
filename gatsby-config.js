@@ -24,5 +24,23 @@ module.exports = {
         includeInDevelopment: false,
       },
     },
+    {
+      resolve: `gatsby-plugin-favicon`,
+      options: {
+        logo: './src/images/mmintm_favicon.png',
+        injectHTML: true,
+        icons: {
+          android: true,
+          appleIcon: true,
+          appleStartup: true,
+          coast: false,
+          favicons: true,
+          firefox: true,
+          twitter: false,
+          yandex: false,
+          windows: false,
+        },
+      },
+    },
   ],
 };
