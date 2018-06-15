@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import classNames from 'classnames';
 
 import DetailsData from 'libs/DetailsData';
+import { dataLayerPush } from 'libs/GTM';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -168,6 +169,11 @@ export default class Details extends Component {
   handleSearch = () => {
     DetailsData.commit();
     this.props.closeDrawer();
+
+    dataLayerPush({
+      event: 'Pageview',
+      url: '/search-results',
+    });
   };
 
   updateData = (type, key, value) => {
